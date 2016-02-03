@@ -7,18 +7,23 @@ function init() {
 	var pressed = false;
 	document.onkeydown = function(e) {
 		if (e.which == 32 && !pressed) {
-			beatInput();
+			beatDown();
 			pressed = true;
 		}
 	};
 	
 	document.onkeyup = function(e) {
-		if (e.which == 32)
+		if (e.which == 32 && pressed) {
+			beatUp();
 			pressed = false;
+		}
 	};
 	
-	document.getElementById('render').addEventListener('touchstart', beatInput);
-	document.getElementById('intro').addEventListener('touchstart', beatInput);
+	document.getElementById('render').addEventListener('touchstart', beatDown);
+	document.getElementById('intro').addEventListener('touchstart', beatDown);
+	
+	document.getElementById('render').addEventListener('touchend', beatUp);
+	document.getElementById('intro').addEventListener('touchend', beatUp);
 }
 
 function handleResize(value, e) {
@@ -46,7 +51,7 @@ var GameState = {
 var levelNum = 0, warmupLeft = 0, gameState = GameState.NoLevel;
 var levels = [], currentLevel = null;
 
-function beatInput() {
+function beatDown() {
 	switch(gameState) {
 		case GameState.NoLevel:
 		case GameState.Finished:
@@ -59,6 +64,20 @@ function beatInput() {
 			drawBeat(false);
 			return;
 	}
+}
+
+function beatUp() {
+	switch(gameState) {
+		case GameState.NoLevel:
+		case GameState.Warmup:
+			return;
+	}
+	
+	if (fade !== undefined)
+		window.cancelAnimationFrame(fade);
+	
+	beatFadeStart = performance.now();
+	fade = window.requestAnimationFrame(fadeBeat);
 }
 
 var countdown = null;
@@ -175,7 +194,7 @@ Level.prototype.drawBar = function(ctx, notes, startX, barWidth, firstBar, lastB
 	return stave;
 };
 
-var beatFadeStart = undefined, beatFadeDuration = 350, fade = undefined;
+var beatFadeStart = undefined, beatFadeDuration = 300, fade = undefined;
 
 function drawBeat(countIn) {
 	var ctx = document.getElementById('beatIndicator').getContext('2d');
@@ -185,14 +204,15 @@ function drawBeat(countIn) {
 	ctx.arc(40, 40, 30, 0, Math.PI * 2);
 	ctx.stroke();
 	
-	if (countIn)
-		window.navigator.vibrate(25);
-	
 	if (fade !== undefined)
 		window.cancelAnimationFrame(fade);
 	
-	beatFadeStart = performance.now();
-	fade = window.requestAnimationFrame(fadeBeat);
+	if (countIn) {
+		beatFadeStart = performance.now();
+		fade = window.requestAnimationFrame(fadeBeat);
+		
+		window.navigator.vibrate(25);
+	}
 }
 
 function fadeBeat(timestamp) {
@@ -203,7 +223,7 @@ function fadeBeat(timestamp) {
 	
 	if (progress < beatFadeDuration) {
 		fade = window.requestAnimationFrame(fadeBeat);
-		ctx.globalAlpha = 0.15;
+		ctx.globalAlpha = 0.2;
 	}
 	else
 		fade = beatFadeStart = undefined;
