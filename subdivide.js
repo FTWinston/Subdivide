@@ -17,15 +17,8 @@ function init() {
 			pressed = false;
 	};
 	
-	document.getElementById('render').addEventListener('touchstart', function(e) {
-		beatInput();
-		e.preventDefault();
-	}, false);
-	
-	document.getElementById('intro').addEventListener('touchstart', function(e) {
-		beatInput();
-		e.preventDefault();
-	}, false);
+	document.getElementById('render').addEventListener('touchstart', beatInput);
+	document.getElementById('intro').addEventListener('touchstart', beatInput);
 }
 
 function handleResize(value, e) {
@@ -50,7 +43,7 @@ var GameState = {
 	Finished: 3,
 }
 
-var levelNum = 0, gameState = GameState.NoLevel;
+var levelNum = 0, warmupLeft = 0, gameState = GameState.NoLevel;
 var levels = [], currentLevel = null;
 
 function beatInput() {
@@ -60,17 +53,19 @@ function beatInput() {
 			moveToLevel(levelNum + 1);
 			return;
 		case GameState.Warmup:
-			startLevel();
+			startCountIn();
 			return;
 		case GameState.Active:
-			drawBeat();
+			drawBeat(false);
 			return;
 	}
 }
 
+var countdown = null;
 function moveToLevel(num) {
 	levelNum = num;
 	gameState = GameState.Warmup;
+	currentLevel = levels[levelNum - 1];
 	
 	document.getElementById('intro').setAttribute('style', 'display:none;');
 	document.getElementById('game').setAttribute('style', '');
@@ -79,15 +74,35 @@ function moveToLevel(num) {
 	document.getElementById('beatIndicator').setAttribute('style', 'display:none;');
 	document.getElementById('countdown').setAttribute('style', '');
 	
-	currentLevel = levels[levelNum - 1];
+	document.getElementById('countdownTime').innerHTML = warmupLeft = currentLevel.warmupTime;
+	
 	draw();
+	
+	countdown = window.setInterval(function() {
+		warmupLeft --;
+		document.getElementById('countdownTime').innerHTML = warmupLeft;
+		
+		if (warmupLeft == 0)
+			startCountIn();
+	}, 1000);
 }
 
-function startLevel() {
+function startCountIn() {
 	gameState = GameState.Active;
+	window.clearInterval(countdown);
 	
 	document.getElementById('countdown').setAttribute('style', 'display:none;');
 	document.getElementById('beatIndicator').setAttribute('style', '');
+	
+	var countInBeats = currentLevel.timeSigBeats;
+	var countIn = window.setInterval(function() {
+		countInBeats --;
+		
+		drawBeat(true);
+		
+		if (countInBeats <= 0)
+			window.clearInterval(countIn);
+	}, 60000 / currentLevel.tempoBeats);
 }
 
 function Level(data) {
@@ -96,6 +111,7 @@ function Level(data) {
 	this.tempoNote = data.tempoNote;
 	this.tempoBeats = data.tempoBeats;
 	this.bars = data.bars;
+	this.warmupTime = data.warmupTime;
 }
 
 Level.prototype.draw = function(canvas) {
@@ -132,7 +148,7 @@ Level.prototype.drawBar = function(ctx, notes, startX, barWidth, firstBar, lastB
 	if (firstBar) {
 		stave.addClef('treble');
 		stave.addTimeSignature(this.timeSigBeats + '/' + this.timeSigValue);
-		stave.setTempo({duration: this.tempoNote, bpm: this.tempoBeats}, 10);
+		stave.setTempo({duration: this.tempoNote, bpm: this.tempoBeats}, 0);
 	}
 	stave.setBegBarType(firstBar ? Vex.Flow.Barline.type.SINGLE : Vex.Flow.Barline.type.NONE);
 	stave.setEndBarType(lastBar ? Vex.Flow.Barline.type.END : firstBar ? Vex.Flow.Barline.type.NONE : Vex.Flow.Barline.type.SINGLE);
@@ -159,15 +175,18 @@ Level.prototype.drawBar = function(ctx, notes, startX, barWidth, firstBar, lastB
 	return stave;
 };
 
-var beatFadeStart = undefined, beatFadeDuration = 1000, fade = undefined;
+var beatFadeStart = undefined, beatFadeDuration = 350, fade = undefined;
 
-function drawBeat() {
+function drawBeat(countIn) {
 	var ctx = document.getElementById('beatIndicator').getContext('2d');
-	ctx.strokeStyle = '#00cc00';
+	ctx.strokeStyle = countIn ? '#cc0000' : '#00cc00';
 	ctx.lineWidth = 10;
 	ctx.beginPath();
 	ctx.arc(40, 40, 30, 0, Math.PI * 2);
 	ctx.stroke();
+	
+	if (countIn)
+		window.navigator.vibrate(25);
 	
 	if (fade !== undefined)
 		window.cancelAnimationFrame(fade);
@@ -181,15 +200,17 @@ function fadeBeat(timestamp) {
 
 	// overdraw with opacity
 	var ctx = document.getElementById('beatIndicator').getContext('2d');
+	
+	if (progress < beatFadeDuration) {
+		fade = window.requestAnimationFrame(fadeBeat);
+		ctx.globalAlpha = 0.15;
+	}
+	else
+		fade = beatFadeStart = undefined;
+	
 	ctx.fillStyle = '#ffffff';
-	ctx.globalAlpha = 0.15;
 	ctx.beginPath();
 	ctx.rect(0, 0, 80, 80);
 	ctx.fill();
 	ctx.globalAlpha = 1;
-
-	if (progress < beatFadeDuration)
-		fade = window.requestAnimationFrame(fadeBeat);
-	else
-		fade = beatFadeStart = undefined;
 }

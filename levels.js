@@ -3,7 +3,7 @@ levels.push(new Level({
 	timeSigValue: 4,
 	tempoNote: '4',
 	tempoBeats: 90,
-	warmupTime: 15,
+	warmupTime: 20,
 	bars: [
 		['4', '4', '4r', '4'],
 		['4', '4r', '4r', '4'],
