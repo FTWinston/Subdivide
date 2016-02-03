@@ -7,12 +7,33 @@
     <link rel="stylesheet" type="text/css" href="subdivide.css" />
 	<script src="vexflow-min.js"></script>
 	<script src="subdivide.js"></script>
+	<script src="levels.js"></script>
 </head>
 <body>
-	<div id="game">
-		 <canvas id="render" width="700" height="100"></canvas>
+	<div id="intro">
+		<p>Subdivide is a game that trains your ability to read rhythms. You need a basic understanding of music notation to play.</p>
+		<p>Each level will show you a rhythm, and count you in. Tap that rhythm on the space bar, or on the screen.</p>
+		<p>To show the first level, <em>tap!</em></p>
 	</div>
-	
+	<div id="game" style="display:none">
+		 <canvas id="render" width="400" height="100"></canvas>
+		 <div id="infoBar">
+			<div id="inGameTitle">
+				<div class="heading">Subdivide</div>
+				<div class="small"><a href="#">help</a></div>
+			</div>
+			<canvas id="beatIndicator" width="80" height="80" style="display:none"></canvas>
+			<div id="countdown">
+				<div class="headingSmall">warm up</div>
+				<div class="heading"><span id="countdownTime">#</span>s</div>
+				<div class="small">tap to start now</div>
+			</div>
+			<div id="levelIndicator">
+				<div class="heading">Level <span id="levelNum">#</span></div>
+				<div class="small"><a href="#">change level</a></div>
+			</div>
+		 </div>
+	</div>	
 	<script>init();</script>
 </body>
 </html>

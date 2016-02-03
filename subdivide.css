@@ -12,13 +12,59 @@ body {
 	overflow: hidden;
 }
 
-canvas {
-	width: 100%;
-	height: 80%;
+#intro {
+	margin: 4em;
 }
 
-system {
+#game, #intro {
 	position: absolute;
 	left: 0; right: 0;
-	top: 4em; bottom: 0;
+	top: 0; bottom: 0;
+}
+
+#render {
+	width: 100%;
+	height: 60%;
+}
+
+#infoBar {
+	position: relative;
+	margin: 1em;
+	height: 40%;
+}
+
+#inGameTitle {
+	position: absolute;
+	left: 2em;
+}
+
+#levelIndicator {
+	position: absolute;
+	right: 2em;
+}
+
+#beatIndicator, #countdown {
+	position: absolute;
+	margin: 0 auto; left: 0; right: 0;
+}
+
+#infoBar > div {
+	text-align: center;
+}
+
+#infoBar .heading {
+	font-size: 3em;
+}
+
+#infoBar .headingSmall {
+	font-size: 2em;
+}
+
+#infoBar .small {
+	color: #999;
+}
+
+#infoBar .small a {
+	font-size: 1.5em;
+	color: #999;
 }
