@@ -44,8 +44,10 @@ function draw() {
 var GameState = {
 	NoLevel: 0,
 	Warmup: 1,
-	Active: 2,
-	Finished: 3,
+	CountIn: 2,
+	Active: 3,
+	Finishing: 4,
+	Finished: 5,
 }
 
 var levelNum = 0, warmupLeft = 0, gameState = GameState.NoLevel;
@@ -55,7 +57,8 @@ function beatDown() {
 	switch(gameState) {
 		case GameState.NoLevel:
 		case GameState.Finished:
-			moveToLevel(levelNum + 1);
+			if (levelNum < levels.length)
+				moveToLevel(levelNum + 1);
 			return;
 		case GameState.Warmup:
 			startCountIn();
@@ -67,11 +70,8 @@ function beatDown() {
 }
 
 function beatUp() {
-	switch(gameState) {
-		case GameState.NoLevel:
-		case GameState.Warmup:
-			return;
-	}
+	if (gameState != GameState.Active)
+		return;
 	
 	if (fade !== undefined)
 		window.cancelAnimationFrame(fade);
@@ -107,21 +107,40 @@ function moveToLevel(num) {
 }
 
 function startCountIn() {
-	gameState = GameState.Active;
+	gameState = GameState.CountIn;
 	window.clearInterval(countdown);
 	
 	document.getElementById('countdown').setAttribute('style', 'display:none;');
 	document.getElementById('beatIndicator').setAttribute('style', '');
 	
-	var countInBeats = currentLevel.timeSigBeats;
-	var countIn = window.setInterval(function() {
-		countInBeats --;
+	var beatsLeft = currentLevel.timeSigBeats;
+	var beatCount = window.setInterval(function() {
+		beatsLeft --;
 		
-		drawBeat(true);
+		if (currentLevel.showBeats || gameState == GameState.CountIn)
+			drawBeat(true);
 		
-		if (countInBeats <= 0)
-			window.clearInterval(countIn);
+		// TODO: if counting in, show a beat NUMBER to differentiate the count-in from the actual start
+		
+		if (beatsLeft <= 0) {
+			if (gameState == GameState.CountIn) {
+				gameState = GameState.Active;
+				beatsLeft = currentLevel.getTotalBeats();
+			}
+			else
+			{
+				beatUp();
+				gameState = GameState.Finishing;
+				window.clearInterval(beatCount);
+				window.setTimeout(finishLevel, 60000 / currentLevel.tempoBeats * currentLevel.timeSigBeats);
+			}
+		}
 	}, 60000 / currentLevel.tempoBeats);
+}
+
+function finishLevel() {
+	gameState = GameState.Finished;
+	// TODO: show a "tap to continue" message
 }
 
 function Level(data) {
@@ -130,7 +149,8 @@ function Level(data) {
 	this.tempoNote = data.tempoNote;
 	this.tempoBeats = data.tempoBeats;
 	this.bars = data.bars;
-	this.warmupTime = data.warmupTime;
+	this.warmupTime = data.warmupTime !== undefined ? data.warmupTime : 10;
+	this.showBeats = data.showBeats !== undefined ? data.showBeats : true;
 }
 
 Level.prototype.draw = function(canvas) {
@@ -194,28 +214,43 @@ Level.prototype.drawBar = function(ctx, notes, startX, barWidth, firstBar, lastB
 	return stave;
 };
 
+Level.prototype.getTotalBeats = function() {
+	return this.timeSigBeats * this.bars.length;
+};
+
 var beatFadeStart = undefined, beatFadeDuration = 300, fade = undefined;
 
 function drawBeat(countIn) {
 	var ctx = document.getElementById('beatIndicator').getContext('2d');
-	ctx.strokeStyle = countIn ? '#cc0000' : '#00cc00';
+	ctx.strokeStyle = '#00cc00';
+	ctx.fillStyle = '#cc0000';
 	ctx.lineWidth = 10;
 	ctx.beginPath();
-	ctx.arc(40, 40, 30, 0, Math.PI * 2);
-	ctx.stroke();
 	
 	if (fade !== undefined)
 		window.cancelAnimationFrame(fade);
 	
 	if (countIn) {
-		beatFadeStart = performance.now();
+		ctx.arc(40, 40, 20, 0, Math.PI * 2);
+		ctx.fill();
+		
+		beatFadeStart = performance.now() + 20;
 		fade = window.requestAnimationFrame(fadeBeat);
 		
 		window.navigator.vibrate(25);
 	}
+	else {
+		ctx.arc(40, 40, 30, 0, Math.PI * 2);
+		ctx.stroke();
+	}
 }
 
 function fadeBeat(timestamp) {
+	if (beatFadeStart > timestamp) {
+		fade = window.requestAnimationFrame(fadeBeat);
+		return;
+	}
+	
 	var progress = timestamp - beatFadeStart;
 
 	// overdraw with opacity
