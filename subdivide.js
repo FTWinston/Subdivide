@@ -45,7 +45,7 @@ var GameState = {
 	Finished: 5,
 }
 
-var pressed = false;
+var pressed = false, beatNum = 0;
 var levelNum = 0, warmupLeft = 0, gameState = GameState.NoLevel;
 var levels = [], currentLevel = null;
 
@@ -65,7 +65,7 @@ function beatDown() {
 		case GameState.Active:
 		case GameState.CountIn:
 			pressed = true;
-			drawBeat(false);
+			drawInput();
 			return;
 	}
 }
@@ -117,19 +117,19 @@ function startCountIn() {
 	document.getElementById('countdown').setAttribute('style', 'display:none;');
 	document.getElementById('beatIndicator').setAttribute('style', '');
 	
-	var beatsLeft = currentLevel.timeSigBeats;
+	beatNum = 0;
+	var totalBeats = currentLevel.timeSigBeats;
 	var beatCount = window.setInterval(function() {
-		beatsLeft --;
+		beatNum ++;
 		
 		if (currentLevel.showBeats || gameState == GameState.CountIn)
-			drawBeat(true);
+			drawBeat();
 		
-		// TODO: if counting in, show a beat NUMBER to differentiate the count-in from the actual start
-		
-		if (beatsLeft <= 0) {
+		if (beatNum >= totalBeats) {
 			if (gameState == GameState.CountIn) {
 				gameState = GameState.Active;
-				beatsLeft = currentLevel.getTotalBeats();
+				beatNum = 0;
+				totalBeats = currentLevel.getTotalBeats();
 			}
 			else
 			{
@@ -226,29 +226,51 @@ Level.prototype.getTotalBeats = function() {
 
 var beatFadeStart = undefined, beatFadeDuration = 300, fade = undefined;
 
-function drawBeat(countIn) {
+function drawInput() {
 	var ctx = document.getElementById('beatIndicator').getContext('2d');
 	ctx.strokeStyle = '#00cc00';
-	ctx.fillStyle = '#cc0000';
 	ctx.lineWidth = 10;
 	ctx.beginPath();
 	
+	ctx.arc(40, 40, 30, 0, Math.PI * 2);
+	ctx.stroke();
+}
+
+function drawBeat() {
 	if (fade !== undefined)
 		window.cancelAnimationFrame(fade);
 	
-	if (countIn) {
+	var ctx = document.getElementById('beatIndicator').getContext('2d');
+	
+	if (gameState == GameState.CountIn) {
+		// draw beat number
+		ctx.fillStyle = '#000000';
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		if (beatNum == currentLevel.timeSigBeats) {
+			ctx.font = '50px Arial';
+			ctx.fillText("Go!", 40, 40);
+		}
+		else {
+			ctx.font = '75px Arial';
+			ctx.fillText(beatNum, 40, 40);
+		}
+		
+		beatFadeStart = performance.now() + 150;
+	}
+	else
+	{
+		ctx.fillStyle = '#cc0000';
+		ctx.beginPath();
 		ctx.arc(40, 40, 20, 0, Math.PI * 2);
 		ctx.fill();
 		
 		beatFadeStart = performance.now() + 20;
-		fade = window.requestAnimationFrame(fadeBeat);
-		
-		window.navigator.vibrate(25);
 	}
-	else {
-		ctx.arc(40, 40, 30, 0, Math.PI * 2);
-		ctx.stroke();
-	}
+	
+	fade = window.requestAnimationFrame(fadeBeat);
+	
+	window.navigator.vibrate(25);
 }
 
 function fadeBeat(timestamp) {
