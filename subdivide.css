@@ -43,7 +43,7 @@ body {
 	right: 2em;
 }
 
-#beatIndicator, #countdown {
+#beatIndicator, #countdown, #continuePrompt {
 	position: absolute;
 	margin: 0 auto; left: 0; right: 0;
 }

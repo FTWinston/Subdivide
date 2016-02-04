@@ -12,7 +12,8 @@
 <body>
 	<div id="intro">
 		<p>Subdivide is a game about reading rhythms. You need a basic understanding of music notation to play.</p>
-		<p>Each level will show you a rhythm, and will count you in after a brief "warm up" period. Tap the rhythm on the space bar, or on the screen.</p>
+		<p>Each level will show you a rhythm, and will give you a full bar's count-in after a brief "warm up" period.</p>
+		<p>Complete levels by accurately tapping their rhythm on the space bar, or on the screen.</p>
 		<p>To show the first level, <em>tap!</em></p>
 	</div>
 	<div id="game" style="display:none">
@@ -26,6 +27,10 @@
 				<div class="headingSmall">warm up</div>
 				<div class="heading"><span id="countdownTime">#</span>s</div>
 				<div class="small">tap to start now</div>
+			</div>
+			<div id="continuePrompt" style="display:none">
+			<div class="heading">level complete</div>
+				<div class="small">tap to continue</div>
 			</div>
 			<div id="levelIndicator">
 				<div class="heading">Level <span id="levelNum">#</span></div>

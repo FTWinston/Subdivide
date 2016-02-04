@@ -4,19 +4,14 @@ function init() {
 	window.addEventListener('resize', handleResize);
 	handleResize();
 	
-	var pressed = false;
 	document.onkeydown = function(e) {
-		if (e.which == 32 && !pressed) {
+		if (e.which == 32)
 			beatDown();
-			pressed = true;
-		}
 	};
 	
 	document.onkeyup = function(e) {
-		if (e.which == 32 && pressed) {
+		if (e.which == 32)
 			beatUp();
-			pressed = false;
-		}
 	};
 	
 	document.getElementById('render').addEventListener('touchstart', beatDown);
@@ -50,10 +45,14 @@ var GameState = {
 	Finished: 5,
 }
 
+var pressed = false;
 var levelNum = 0, warmupLeft = 0, gameState = GameState.NoLevel;
 var levels = [], currentLevel = null;
 
 function beatDown() {
+	if (pressed)
+		return;
+	
 	switch(gameState) {
 		case GameState.NoLevel:
 		case GameState.Finished:
@@ -64,14 +63,18 @@ function beatDown() {
 			startCountIn();
 			return;
 		case GameState.Active:
+		case GameState.CountIn:
+			pressed = true;
 			drawBeat(false);
 			return;
 	}
 }
 
 function beatUp() {
-	if (gameState != GameState.Active)
+	if (!pressed || (gameState != GameState.Active && gameState != GameState.CountIn))
 		return;
+	
+	pressed = false;
 	
 	if (fade !== undefined)
 		window.cancelAnimationFrame(fade);
@@ -91,6 +94,7 @@ function moveToLevel(num) {
 	document.getElementById('levelNum').innerHTML = levelNum;
 	
 	document.getElementById('beatIndicator').setAttribute('style', 'display:none;');
+	document.getElementById('continuePrompt').setAttribute('style', 'display:none;');
 	document.getElementById('countdown').setAttribute('style', '');
 	
 	document.getElementById('countdownTime').innerHTML = warmupLeft = currentLevel.warmupTime;
@@ -140,7 +144,9 @@ function startCountIn() {
 
 function finishLevel() {
 	gameState = GameState.Finished;
-	// TODO: show a "tap to continue" message
+	
+	document.getElementById('beatIndicator').setAttribute('style', 'display:none;');
+	document.getElementById('continuePrompt').setAttribute('style', '');
 }
 
 function Level(data) {
@@ -265,7 +271,10 @@ function fadeBeat(timestamp) {
 	
 	ctx.fillStyle = '#ffffff';
 	ctx.beginPath();
-	ctx.rect(0, 0, 80, 80);
+	if (pressed)
+		ctx.arc(40, 40, 22, 0, Math.PI * 2);
+	else
+		ctx.rect(0, 0, 80, 80);
 	ctx.fill();
 	ctx.globalAlpha = 1;
 }
