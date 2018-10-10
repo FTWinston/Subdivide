@@ -24,19 +24,19 @@ for (const level of levels) {
             const validNoteDurations = [
                 NoteDuration.Semibreve,
     
-                // NoteDuration.DottedMinim,
+                NoteDuration.DottedMinim,
                 NoteDuration.Minim,
                 NoteDuration.TripletMinim,
                 
-                // NoteDuration.DottedCrotchet,
+                NoteDuration.DottedCrotchet,
                 NoteDuration.Crotchet,
                 NoteDuration.TripletCrotchet,
                 
-                // NoteDuration.DottedQuaver,
+                NoteDuration.DottedQuaver,
                 NoteDuration.Quaver,
                 NoteDuration.TripletQuaver,
                 
-                // NoteDuration.DottedSemiquaver,
+                NoteDuration.DottedSemiquaver,
                 NoteDuration.Semiquaver,
                 NoteDuration.TripletSemiquaver,
             ];
@@ -44,6 +44,37 @@ for (const level of levels) {
             for (const sequence of level.noteSequences) {
                 for (const note of sequence) {
                     expect(validNoteDurations).toContain(note.duration);
+                }
+            }
+        });
+
+        test('triplets come in threes', () => {
+            const tripletTypes = [
+                NoteDuration.TripletMinim,
+                NoteDuration.TripletCrotchet,
+                NoteDuration.TripletQuaver,
+                NoteDuration.TripletSemiquaver,
+            ];
+            
+            for (const sequence of level.noteSequences) {
+                for (let i=0; i<sequence.length; i++) {
+                    const groupNoteDuration = sequence[i].duration;
+                    
+                    const isTriplet = tripletTypes.indexOf(groupNoteDuration) !== -1;
+                    if (!isTriplet) {
+                        continue;
+                    }
+
+                    const lastTripletIndex = i + 2;
+                    expect(lastTripletIndex).toBeLessThan(sequence.length);
+                    if (lastTripletIndex >= sequence.length) {
+                        continue;
+                    }
+
+                    expect(sequence[i + 1].duration).toBe(groupNoteDuration);
+                    expect(sequence[i + 2].duration).toBe(groupNoteDuration);
+
+                    i = lastTripletIndex;
                 }
             }
         });
