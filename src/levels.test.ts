@@ -26,19 +26,19 @@ for (const level of levels) {
     
                 // NoteDuration.DottedMinim,
                 NoteDuration.Minim,
-                // NoteDuration.TripletMinim,
+                NoteDuration.TripletMinim,
                 
                 // NoteDuration.DottedCrotchet,
                 NoteDuration.Crotchet,
-                // NoteDuration.TripletCrotchet,
+                NoteDuration.TripletCrotchet,
                 
                 // NoteDuration.DottedQuaver,
                 NoteDuration.Quaver,
-                // NoteDuration.TripletQuaver,
+                NoteDuration.TripletQuaver,
                 
                 // NoteDuration.DottedSemiquaver,
                 NoteDuration.Semiquaver,
-                // NoteDuration.TripletSemiquaver,
+                NoteDuration.TripletSemiquaver,
             ];
 
             for (const sequence of level.noteSequences) {

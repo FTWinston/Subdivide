@@ -1,5 +1,5 @@
 import { Deck } from './Deck';
-import { ILevel, IMusic, MusicElement } from './musicData';
+import { ILevel, IMusic, INote } from './musicData';
 
 export function loadLevel(data: ILevel): IMusic {
     const barLength = getBarLength(data);
@@ -17,15 +17,15 @@ export function getBarLength(level: ILevel) {
     return level.timeSignature[0] * level.timeSignature[1];
 }
 
-export function getSequenceLength(sequence: MusicElement[]) {
+export function getSequenceLength(sequence: INote[]) {
     return sequence.reduce((total, current) => total + current.duration, 0);
 }
 
-function populateBars(numBars: number, barLength: number, sequences: MusicElement[][]) {
+function populateBars(numBars: number, barLength: number, sequences: INote[][]) {
     const sequenceLength = getSequenceLength(sequences[0]);
 
-    const sequenceDeck = new Deck<MusicElement[]>(sequences);
-    const bars: MusicElement[][] = [];
+    const sequenceDeck = new Deck<INote[]>(sequences);
+    const bars: INote[][] = [];
 
     do {
         const bar = populateBar(barLength, sequenceLength, () => sequenceDeck.draw());
@@ -35,8 +35,8 @@ function populateBars(numBars: number, barLength: number, sequences: MusicElemen
     return bars;
 }
 
-function populateBar(barLength: number, sequenceLength: number, getNextSequence: () => MusicElement[]) {
-    const bar: MusicElement[] = [];
+function populateBar(barLength: number, sequenceLength: number, getNextSequence: () => INote[]) {
+    const bar: INote[] = [];
 
     let length = 0;
     do {

@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { INote, ITriplet, MusicElement, NoteDuration, NoteType, Triplet } from './musicData';
+import { INote, NoteDuration, NoteType } from './musicData';
 import './MusicDisplay.css';
 import { NoteDisplay } from './NoteDisplay';
-import { TripletDisplay } from './TripletDisplay';
 
 interface IProps {
     timeSignature: [number, NoteDuration];
     tempo: [NoteDuration, number];
-    bars: MusicElement[][];
+    bars: INote[][];
 }
 
 export class MusicDisplay extends React.PureComponent<IProps> {
@@ -37,16 +36,8 @@ export class MusicDisplay extends React.PureComponent<IProps> {
         </div>;
     }
 
-    private renderBar(elements: MusicElement[], key: number) {
-        const elementDisplay = elements.map((e, i) => {
-            if (e.type === Triplet) {
-                const noteDuration = e.duration * 2 / 3 as NoteDuration;
-                return <TripletDisplay key={i} noteDuration={noteDuration} notes={(e as ITriplet).notes} />
-            }
-            else {
-                return <NoteDisplay key={i} duration={e.duration} type={(e as INote).type} />
-            }
-        })
+    private renderBar(elements: INote[], key: number) {
+        const elementDisplay = elements.map((e, i) => <NoteDisplay key={i} duration={e.duration} type={(e as INote).type} />);
 
         return (
             <div className="music__bar" key={key}>

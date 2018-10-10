@@ -29,20 +29,10 @@ export const enum NoteType {
     */
 }
 
-export const Triplet = -1;
-
 export interface INote {
     duration: NoteDuration;
     type: NoteType;
 }
-
-export interface ITriplet {
-    type: -1;
-    duration: NoteDuration;
-    notes: [NoteType, NoteType, NoteType];
-}
-
-export type MusicElement = INote | ITriplet;
 
 interface IMusicBase {
     name: string;
@@ -53,9 +43,9 @@ interface IMusicBase {
 export interface ILevel extends IMusicBase {
     numberOfBars: number;
 
-    noteSequences: MusicElement[][];
+    noteSequences: INote[][];
 }
 
 export interface IMusic extends IMusicBase {
-    bars: MusicElement[][];
+    bars: INote[][];
 }

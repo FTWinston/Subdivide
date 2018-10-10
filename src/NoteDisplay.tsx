@@ -5,7 +5,6 @@ import './NoteDisplay.css';
 interface IProps {
     duration: NoteDuration;
     type: NoteType;
-    inTriplet?: boolean;
 }
 
 export class NoteDisplay extends React.PureComponent<IProps> {
@@ -23,11 +22,7 @@ export class NoteDisplay extends React.PureComponent<IProps> {
                 return;
         }
 
-        let classes = "note";
-        if (this.props.inTriplet === true) {
-            classes += ' note--triplet';
-        }
-
+        const classes = "note";
         return <div className={classes} data-type={strType} data-duration={this.props.duration} />
     }
 }
