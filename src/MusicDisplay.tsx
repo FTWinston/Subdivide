@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { INote, ITriplet, MusicElement, NoteDuration, Triplet } from './musicData';
+import { INote, ITriplet, MusicElement, NoteDuration, NoteType, Triplet } from './musicData';
 import './MusicDisplay.css';
 import { NoteDisplay } from './NoteDisplay';
 import { TripletDisplay } from './TripletDisplay';
@@ -16,8 +16,8 @@ export class MusicDisplay extends React.PureComponent<IProps> {
 
         return (
             <div className="music">
-                <div className="music__tempo" data-beat={this.props.tempo[0]}>{this.props.tempo[1]}</div>
-                <div className="music__timeSignature timeSignature">
+                <div className="music__tempo"><NoteDisplay duration={this.props.tempo[0]} type={NoteType.Note} /> = {this.props.tempo[1]}</div>
+                <div className="music__bar music__bar--timeSignature timeSignature">
                     <div className="timeSignature__beats">{this.props.timeSignature[0]}</div>
                     <div className="timeSignature__measure">{this.props.timeSignature[1]}</div>
                 </div>

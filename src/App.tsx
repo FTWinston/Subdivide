@@ -8,13 +8,14 @@ class App extends React.Component {
     public render() {
         const music = levels.map((l, i) => {
             const data = loadLevel(l);
-            return (
+            return [
+                <h2 key={i.toString() + 'h'}>{data.name}</h2>,
                 <MusicDisplay key={i}
                     bars={data.bars}
                     tempo={data.tempo}
                     timeSignature={data.timeSignature}
                 />
-            );
+            ];
         });
 
         return (

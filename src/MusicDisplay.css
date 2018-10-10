@@ -3,7 +3,7 @@
     position: relative;
     flex-wrap: wrap;
     padding-top: 2em;
-    margin: 2em 0.5em;
+    margin: 0.5em;
 }
 
 .music__bar {    
@@ -11,9 +11,11 @@
     justify-content: space-evenly;
     align-items: center;
     padding: 0 0.5em;
+    height: 2.5em;
+    margin: 0.5em 0;
 }
 
-.music__bar + .music__bar {
+.music__bar {
     border-left: solid black 0.05em;
 }
 
@@ -25,6 +27,14 @@
     position: absolute;
     top: 0;
     left: 0;
+
+    display: flex;
+    align-items: baseline;
+}
+
+.music__tempo .note {
+    font-size: 0.75em;
+    background-size: 75%;
 }
 
 .music__tempo[data-beat="4"]::before {
@@ -39,9 +49,13 @@
     content: 'quaver = ';
 }
 
+.music__bar--timeSignature + .music__bar {
+    border-left: none !important;
+}
+
 .timeSignature {
     display: flex;
     flex-direction: column;
-    border-left: solid black 0.05em;
+    font-weight: bolder;
     padding: 0 0.5em;
 }

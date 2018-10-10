@@ -1,41 +1,61 @@
 .note {
-    background-color: black;
+    width: 1em;
+    height: 2em;
     margin: 0 0.5em;
+    background-repeat: no-repeat;
+    background-position: bottom left;
+    display: inline-block;
 }
 
-.note:not([data-type="rest"]) {
-    border-radius: 1em;
-    padding: 0.4em 0.45em;
+.note[data-duration="1"] {
+    width: 4em;
+}
+
+.note[data-duration="2"] {
+    width: 2em;
+}
+
+.note:not([data-type="rest"])[data-duration="1"] {
+    background-image: url('notes/semibreve.svg');
 }
 
 .note:not([data-type="rest"])[data-duration="2"] {
-    background-color: transparent;
-    border: solid black 0.2em;
+    background-image: url('notes/minim.svg');
 }
 
 .note:not([data-type="rest"])[data-duration="4"] {
-    
+    background-image: url('notes/crotchet.svg');
 }
 
 .note:not([data-type="rest"])[data-duration="8"] {
-    
+    background-image: url('notes/quaver.svg');
+}
+
+.note:not([data-type="rest"])[data-duration="16"] {
+    background-image: url('notes/semiquaver.svg');
+}
+
+.note[data-type="rest"][data-duration="1"] {
+    background-image: url('notes/semibreveRest.svg');
 }
 
 .note[data-type="rest"][data-duration="2"] {
-    border-radius: 0;
-    padding: 0.2em 0.6em;
+    background-image: url('notes/minimRest.svg');
 }
 
 .note[data-type="rest"][data-duration="4"] {
-    border-radius: 0;
-    padding: 0.6em 0.2em;
+    background-image: url('notes/crotchetRest.svg');
 }
 
 .note[data-type="rest"][data-duration="8"] {
-    border-radius: 0;
-    padding: 0.5em 0.1em;
+    background-image: url('notes/quaverRest.svg');
 }
 
+.note[data-type="rest"][data-duration="16"] {
+    background-image: url('notes/semiquaverRest.svg');
+}
+
+
 .note--triplet {
-    background-color: red;
+    background-color: rgba(255,0,0,0.5);
 }
