@@ -1,0 +1,41 @@
+.note {
+    background-color: black;
+    margin: 0 0.5em;
+}
+
+.note:not([data-type="rest"]) {
+    border-radius: 1em;
+    padding: 0.4em 0.45em;
+}
+
+.note:not([data-type="rest"])[data-duration="2"] {
+    background-color: transparent;
+    border: solid black 0.2em;
+}
+
+.note:not([data-type="rest"])[data-duration="4"] {
+    
+}
+
+.note:not([data-type="rest"])[data-duration="8"] {
+    
+}
+
+.note[data-type="rest"][data-duration="2"] {
+    border-radius: 0;
+    padding: 0.2em 0.6em;
+}
+
+.note[data-type="rest"][data-duration="4"] {
+    border-radius: 0;
+    padding: 0.6em 0.2em;
+}
+
+.note[data-type="rest"][data-duration="8"] {
+    border-radius: 0;
+    padding: 0.5em 0.1em;
+}
+
+.note--triplet {
+    background-color: red;
+}

@@ -1,0 +1,47 @@
+.music {
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+    padding-top: 2em;
+    margin: 2em 0.5em;
+}
+
+.music__bar {    
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0 0.5em;
+}
+
+.music__bar + .music__bar {
+    border-left: solid black 0.05em;
+}
+
+.music__bar:last-child {
+    border-right: double black 0.25em;
+}
+
+.music__tempo {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.music__tempo[data-beat="4"]::before {
+    content: 'crotchet = ';
+}
+
+.music__tempo[data-beat="2"]::before {
+    content: 'minim = ';
+}
+
+.music__tempo[data-beat="8"]::before {
+    content: 'quaver = ';
+}
+
+.timeSignature {
+    display: flex;
+    flex-direction: column;
+    border-left: solid black 0.05em;
+    padding: 0 0.5em;
+}
