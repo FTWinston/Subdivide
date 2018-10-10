@@ -14,11 +14,11 @@ export function loadLevel(data: ILevel): IMusic {
 }
 
 export function getBarLength(level: ILevel) {
-    return level.timeSignature[0] * 1 / level.timeSignature[1];
+    return level.timeSignature[0] * level.timeSignature[1];
 }
 
 export function getSequenceLength(sequence: MusicElement[]) {
-    return sequence.reduce((total, current) => total + 1 / current.duration, 0);
+    return sequence.reduce((total, current) => total + current.duration, 0);
 }
 
 function populateBars(numBars: number, barLength: number, sequences: MusicElement[][]) {

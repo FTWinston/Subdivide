@@ -1,4 +1,22 @@
-export type NoteDuration = 1 | 2 | 3 | 4 | 6 | 8 | 12 | 16 | 18 | 24 | 32;
+export const enum NoteDuration {
+    Semibreve = 96,
+    
+    DottedMinim = 72,
+    Minim = 48,
+    TripletMinim = 32,
+    
+    DottedCrotchet = 36,
+    Crotchet = 24,
+    TripletCrotchet = 16,
+    
+    DottedQuaver = 18,
+    Quaver = 12,
+    TripletQuaver = 8,
+    
+    DottedSemiquaver = 9,
+    Semiquaver = 6,
+    TripletSemiquaver = 4,
+}
 
 export const enum NoteType {
     Rest = 0,
@@ -28,7 +46,7 @@ export type MusicElement = INote | ITriplet;
 
 interface IMusicBase {
     name: string;
-    timeSignature: [NoteDuration, number];
+    timeSignature: [number, NoteDuration];
     tempo: [NoteDuration, number];
 }
 

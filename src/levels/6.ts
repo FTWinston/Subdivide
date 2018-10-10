@@ -1,56 +1,56 @@
-import { ILevel, NoteType, Triplet } from '../musicData';
+import { ILevel, NoteDuration, NoteType, Triplet } from '../musicData';
 
 const level: ILevel = {
     name: 'Triplets',
     noteSequences: [
         [
             {
-                duration: 4,
+                duration: NoteDuration.Crotchet,
                 type: NoteType.Note,
             },
             {
-                duration: 4,
+                duration: NoteDuration.Crotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                duration: 4,
+                duration: NoteDuration.Crotchet,
                 type: NoteType.Note,
             },
             {
-                duration: 4,
+                duration: NoteDuration.Crotchet,
                 type: NoteType.Rest,
             }
         ],
         [
             {
-                duration: 4,
+                duration: NoteDuration.Crotchet,
                 type: NoteType.Rest,
             },
             {
-                duration: 4,
+                duration: NoteDuration.Crotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                duration: 2,
+                duration: NoteDuration.Minim,
                 notes: [NoteType.Note, NoteType.Note, NoteType.Note],
                 type: Triplet,
             }
         ],
         [
             {
-                duration: 2,
+                duration: NoteDuration.Minim,
                 notes: [NoteType.Note, NoteType.Note, NoteType.Note],
                 type: Triplet,
             }
         ],
     ],
     numberOfBars: 4,
-    tempo: [4, 80],
-    timeSignature: [4, 4],
+    tempo: [NoteDuration.Crotchet, 80],
+    timeSignature: [4, NoteDuration.Crotchet],
 }
 
 export default level;

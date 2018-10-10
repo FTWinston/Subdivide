@@ -5,7 +5,7 @@ import { NoteDisplay } from './NoteDisplay';
 import { TripletDisplay } from './TripletDisplay';
 
 interface IProps {
-    timeSignature: [NoteDuration, number];
+    timeSignature: [number, NoteDuration];
     tempo: [NoteDuration, number];
     bars: MusicElement[][];
 }
@@ -16,15 +16,25 @@ export class MusicDisplay extends React.PureComponent<IProps> {
 
         return (
             <div className="music">
-                <div className="music__tempo"><NoteDisplay duration={this.props.tempo[0]} type={NoteType.Note} /> = {this.props.tempo[1]}</div>
-                <div className="music__bar music__bar--timeSignature timeSignature">
-                    <div className="timeSignature__beats">{this.props.timeSignature[0]}</div>
-                    <div className="timeSignature__measure">{this.props.timeSignature[1]}</div>
-                </div>
-
+                {this.renderTempo()}
+                {this.renderTimeSignature()}
                 {bars}
             </div>
         );
+    }
+
+    private renderTempo() {
+        return <div className="music__tempo"><NoteDisplay duration={this.props.tempo[0]} type={NoteType.Note} /> = {this.props.tempo[1]}</div>
+    }
+
+    private renderTimeSignature() {
+        const numBeats = this.props.timeSignature[0];
+        const measure = NoteDuration.Semibreve / this.props.timeSignature[1];
+
+        return <div className="music__bar music__bar--timeSignature timeSignature">
+            <div className="timeSignature__beats">{numBeats}</div>
+            <div className="timeSignature__measure">{measure}</div>
+        </div>;
     }
 
     private renderBar(elements: MusicElement[], key: number) {

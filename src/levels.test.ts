@@ -1,9 +1,11 @@
 import { levels } from './levels';
 import { getBarLength, getSequenceLength, loadLevel } from './loadLevel';
+import { NoteDuration } from './musicData';
 
 let iLevel = 1;
 for (const level of levels) {
     describe(`level ${iLevel}: ${level.name}`, () => {
+
         test('has notes', () => {
             expect(level.noteSequences.length).toBeGreaterThan(0);
             expect(level.noteSequences[0].length).toBeGreaterThan(0);
@@ -14,7 +16,35 @@ for (const level of levels) {
     
             for (const sequence of level.noteSequences) {
                 const sequenceLength = getSequenceLength(sequence);
-                expect(sequenceLength).toBeCloseTo(firstSequenceLength, 4);
+                expect(sequenceLength).toBe(firstSequenceLength);
+            }
+        });
+
+        test('note lengths all valid', () => {
+            const validNoteDurations = [
+                NoteDuration.Semibreve,
+    
+                // NoteDuration.DottedMinim,
+                NoteDuration.Minim,
+                // NoteDuration.TripletMinim,
+                
+                // NoteDuration.DottedCrotchet,
+                NoteDuration.Crotchet,
+                // NoteDuration.TripletCrotchet,
+                
+                // NoteDuration.DottedQuaver,
+                NoteDuration.Quaver,
+                // NoteDuration.TripletQuaver,
+                
+                // NoteDuration.DottedSemiquaver,
+                NoteDuration.Semiquaver,
+                // NoteDuration.TripletSemiquaver,
+            ];
+
+            for (const sequence of level.noteSequences) {
+                for (const note of sequence) {
+                    expect(validNoteDurations).toContain(note.duration);
+                }
             }
         });
 
@@ -25,7 +55,7 @@ for (const level of levels) {
             const divided = barLength / sequenceLength;
             const rounded = Math.round(divided);
             
-            expect(divided).toBeCloseTo(rounded, 4);
+            expect(divided).toBe(rounded);
         });
 
         test('loads', () => {
