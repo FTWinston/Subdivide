@@ -20,6 +20,7 @@
     "@types/react": "^16.4.16",
     "@types/react-dom": "^16.0.9",
     "@types/shuffle-array": "0.0.28",
+    "svg-react-loader": "^0.4.5",
     "typescript": "^3.1.2"
   }
 }
