@@ -1,54 +1,54 @@
-import { ILevel, NoteDuration, NoteType } from '../musicData';
+import { ILevel, NoteLength, NoteType } from '../musicData';
 
 const level: ILevel = {
     name: 'Longer notes',
     noteSequences: [
         [
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             },
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Rest,
             }
         ],
         [
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Rest,
             },
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             },
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                length: NoteDuration.Minim,
+                length: NoteLength.Minim,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                length: NoteDuration.Minim,
+                length: NoteLength.Minim,
                 type: NoteType.Rest,
             }
         ],
     ],
     numberOfBars: 4,
-    tempo: [NoteDuration.Crotchet, 80],
-    timeSignature: [4, NoteDuration.Crotchet],
+    tempo: [NoteLength.Crotchet, 80],
+    timeSignature: [4, NoteLength.Crotchet],
 }
 
 export default level;

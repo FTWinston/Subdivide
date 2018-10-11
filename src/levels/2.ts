@@ -1,32 +1,32 @@
-import { ILevel, NoteDuration, NoteType } from '../musicData';
+import { ILevel, NoteLength, NoteType } from '../musicData';
 
 const level: ILevel = {
     name: 'Occasional rests',
     noteSequences: [
         [
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             },
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             },
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Rest,
             }
         ]
     ],
     numberOfBars: 3,
-    tempo: [NoteDuration.Crotchet, 80],
-    timeSignature: [4, NoteDuration.Crotchet],
+    tempo: [NoteLength.Crotchet, 80],
+    timeSignature: [4, NoteLength.Crotchet],
 }
 
 export default level;

@@ -1,18 +1,18 @@
-import { ILevel, NoteDuration, NoteType } from '../musicData';
+import { ILevel, NoteLength, NoteType } from '../musicData';
 
 const level: ILevel = {
     name: 'Straight notes',
     noteSequences: [
         [
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             }
         ]
     ],
     numberOfBars: 1,
-    tempo: [NoteDuration.Crotchet, 80],
-    timeSignature: [4, NoteDuration.Crotchet],
+    tempo: [NoteLength.Crotchet, 80],
+    timeSignature: [4, NoteLength.Crotchet],
 }
 
 export default level;

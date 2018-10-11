@@ -11,11 +11,11 @@ import SemibreveRest from '-!svg-react-loader?name=Note!./notes/semibreveRest.sv
 import Semiquaver from '-!svg-react-loader?name=Note!./notes/semiquaver.svg';
 import SemiquaverRest from '-!svg-react-loader?name=Note!./notes/semiquaverRest.svg';
 
-import { NoteDuration, NoteType } from './musicData';
+import { NoteLength, NoteType } from './musicData';
 import './NoteDisplay.css';
 
 interface IProps {
-    duration: NoteDuration;
+    duration: NoteLength;
     type: NoteType;
 }
 
@@ -35,50 +35,50 @@ export class NoteDisplay extends React.PureComponent<IProps> {
         
         
         switch (this.props.duration) {
-            case NoteDuration.DottedMinim:
-            case NoteDuration.DottedCrotchet:
-            case NoteDuration.DottedQuaver:
-            case NoteDuration.DottedSemiquaver:
+            case NoteLength.DottedMinim:
+            case NoteLength.DottedCrotchet:
+            case NoteLength.DottedQuaver:
+            case NoteLength.DottedSemiquaver:
                 classes += ' note--dotted';
                 break;
-            case NoteDuration.TripletMinim:
-            case NoteDuration.TripletCrotchet:
-            case NoteDuration.TripletQuaver:
-            case NoteDuration.TripletSemiquaver:
+            case NoteLength.TripletMinim:
+            case NoteLength.TripletCrotchet:
+            case NoteLength.TripletQuaver:
+            case NoteLength.TripletSemiquaver:
                 classes += ' note--triplet';
                 break;
         }
 
         switch (this.props.duration) {
-            case NoteDuration.Semibreve:
+            case NoteLength.Semibreve:
                 return this.props.type === NoteType.Rest
                     ? <SemibreveRest className={classes} />
                     : <Semibreve className={classes} />;
 
-            case NoteDuration.Minim:
-            case NoteDuration.DottedMinim:
-            case NoteDuration.TripletMinim:
+            case NoteLength.Minim:
+            case NoteLength.DottedMinim:
+            case NoteLength.TripletMinim:
                 return this.props.type === NoteType.Rest
                     ? <MinimRest className={classes} />
                     : <Minim className={classes} />;
                     
-            case NoteDuration.Crotchet:
-            case NoteDuration.DottedCrotchet:
-            case NoteDuration.TripletCrotchet:
+            case NoteLength.Crotchet:
+            case NoteLength.DottedCrotchet:
+            case NoteLength.TripletCrotchet:
                 return this.props.type === NoteType.Rest
                     ? <CrotchetRest className={classes} />
                     : <Crotchet className={classes} />;
                     
-            case NoteDuration.Quaver:
-            case NoteDuration.DottedQuaver:
-            case NoteDuration.TripletQuaver:
+            case NoteLength.Quaver:
+            case NoteLength.DottedQuaver:
+            case NoteLength.TripletQuaver:
                 return this.props.type === NoteType.Rest
                     ? <QuaverRest className={classes} />
                     : <Quaver className={classes} />;
                     
-            case NoteDuration.Semiquaver:
-            case NoteDuration.DottedSemiquaver:
-            case NoteDuration.TripletSemiquaver:
+            case NoteLength.Semiquaver:
+            case NoteLength.DottedSemiquaver:
+            case NoteLength.TripletSemiquaver:
                 return this.props.type === NoteType.Rest
                     ? <SemiquaverRest className={classes} />
                     : <Semiquaver className={classes} />;

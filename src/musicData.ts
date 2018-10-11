@@ -1,4 +1,4 @@
-export const enum NoteDuration {
+export const enum NoteLength {
     Semibreve = 96,
     
     DottedMinim = 72,
@@ -30,14 +30,18 @@ export const enum NoteType {
 }
 
 export interface INote {
-    length: NoteDuration;
+    length: NoteLength;
     type: NoteType;
 }
 
+export type Tempo = [NoteLength, number];
+
+export type TimeSignature = [number, NoteLength];
+
 interface IMusicBase {
     name: string;
-    timeSignature: [number, NoteDuration];
-    tempo: [NoteDuration, number];
+    timeSignature: TimeSignature;
+    tempo: Tempo;
 }
 
 export interface ILevel extends IMusicBase {

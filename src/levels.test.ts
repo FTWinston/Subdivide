@@ -1,6 +1,6 @@
 import { levels } from './levels';
 import { getBarLength, getSequenceLength, loadLevel } from './loadLevel';
-import { NoteDuration } from './musicData';
+import { NoteLength } from './musicData';
 
 let iLevel = 1;
 for (const level of levels) {
@@ -22,23 +22,23 @@ for (const level of levels) {
 
         test('note lengths all valid', () => {
             const validNoteDurations = [
-                NoteDuration.Semibreve,
+                NoteLength.Semibreve,
     
-                NoteDuration.DottedMinim,
-                NoteDuration.Minim,
-                NoteDuration.TripletMinim,
+                NoteLength.DottedMinim,
+                NoteLength.Minim,
+                NoteLength.TripletMinim,
                 
-                NoteDuration.DottedCrotchet,
-                NoteDuration.Crotchet,
-                NoteDuration.TripletCrotchet,
+                NoteLength.DottedCrotchet,
+                NoteLength.Crotchet,
+                NoteLength.TripletCrotchet,
                 
-                NoteDuration.DottedQuaver,
-                NoteDuration.Quaver,
-                NoteDuration.TripletQuaver,
+                NoteLength.DottedQuaver,
+                NoteLength.Quaver,
+                NoteLength.TripletQuaver,
                 
-                NoteDuration.DottedSemiquaver,
-                NoteDuration.Semiquaver,
-                NoteDuration.TripletSemiquaver,
+                NoteLength.DottedSemiquaver,
+                NoteLength.Semiquaver,
+                NoteLength.TripletSemiquaver,
             ];
 
             for (const sequence of level.noteSequences) {
@@ -50,10 +50,10 @@ for (const level of levels) {
 
         test('triplets come in threes', () => {
             const tripletTypes = [
-                NoteDuration.TripletMinim,
-                NoteDuration.TripletCrotchet,
-                NoteDuration.TripletQuaver,
-                NoteDuration.TripletSemiquaver,
+                NoteLength.TripletMinim,
+                NoteLength.TripletCrotchet,
+                NoteLength.TripletQuaver,
+                NoteLength.TripletSemiquaver,
             ];
             
             for (const sequence of level.noteSequences) {

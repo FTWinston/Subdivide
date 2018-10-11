@@ -1,70 +1,70 @@
-import { ILevel, NoteDuration, NoteType } from '../musicData';
+import { ILevel, NoteLength, NoteType } from '../musicData';
 
 const level: ILevel = {
     name: 'Triplets',
     noteSequences: [
         [
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             },
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             },
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Rest,
             }
         ],
         [
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Rest,
             },
             {
-                length: NoteDuration.Crotchet,
+                length: NoteLength.Crotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                length: NoteDuration.TripletCrotchet,
+                length: NoteLength.TripletCrotchet,
                 type: NoteType.Note,
             },
             {
-                length: NoteDuration.TripletCrotchet,
+                length: NoteLength.TripletCrotchet,
                 type: NoteType.Note,
             },
             {
-                length: NoteDuration.TripletCrotchet,
+                length: NoteLength.TripletCrotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                length: NoteDuration.TripletCrotchet,
+                length: NoteLength.TripletCrotchet,
                 type: NoteType.Note,
             },
             {
-                length: NoteDuration.TripletCrotchet,
+                length: NoteLength.TripletCrotchet,
                 type: NoteType.Note,
             },
             {
-                length: NoteDuration.TripletCrotchet,
+                length: NoteLength.TripletCrotchet,
                 type: NoteType.Note,
             }
         ],
     ],
     numberOfBars: 4,
-    tempo: [NoteDuration.Crotchet, 80],
-    timeSignature: [4, NoteDuration.Crotchet],
+    tempo: [NoteLength.Crotchet, 80],
+    timeSignature: [4, NoteLength.Crotchet],
 }
 
 export default level;
