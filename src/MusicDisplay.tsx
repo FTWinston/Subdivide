@@ -37,7 +37,7 @@ export class MusicDisplay extends React.PureComponent<IProps> {
     }
 
     private renderBar(elements: INote[], key: number) {
-        const elementDisplay = elements.map((e, i) => <NoteDisplay key={i} duration={e.duration} type={(e as INote).type} />);
+        const elementDisplay = elements.map((e, i) => <NoteDisplay key={i} duration={e.length} type={(e as INote).type} />);
 
         return (
             <div className="music__bar" key={key}>

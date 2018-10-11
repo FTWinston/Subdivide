@@ -5,67 +5,67 @@ const level: ILevel = {
     noteSequences: [
         [
             {
-                duration: NoteDuration.Crotchet,
+                length: NoteDuration.Crotchet,
                 type: NoteType.Note,
             },
             {
-                duration: NoteDuration.Crotchet,
+                length: NoteDuration.Crotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                duration: NoteDuration.Quaver,
+                length: NoteDuration.Quaver,
                 type: NoteType.Note,
             },
             {
-                duration: NoteDuration.Quaver,
+                length: NoteDuration.Quaver,
                 type: NoteType.Note,
             },
             {
-                duration: NoteDuration.Crotchet,
+                length: NoteDuration.Crotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                duration: NoteDuration.Crotchet,
+                length: NoteDuration.Crotchet,
                 type: NoteType.Note,
             },
             {
-                duration: NoteDuration.Quaver,
+                length: NoteDuration.Quaver,
                 type: NoteType.Note,
             },
             {
-                duration: NoteDuration.Quaver,
+                length: NoteDuration.Quaver,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                duration: NoteDuration.Quaver,
+                length: NoteDuration.Quaver,
                 type: NoteType.Note,
             },
             {
-                duration: NoteDuration.Quaver,
+                length: NoteDuration.Quaver,
                 type: NoteType.Note,
             },
             {
-                duration: NoteDuration.Crotchet,
+                length: NoteDuration.Crotchet,
                 type: NoteType.Rest,
             }
         ],
         [
             {
-                duration: NoteDuration.Crotchet,
+                length: NoteDuration.Crotchet,
                 type: NoteType.Rest,
             },
             {
-                duration: NoteDuration.Quaver,
+                length: NoteDuration.Quaver,
                 type: NoteType.Note,
             },
             {
-                duration: NoteDuration.Quaver,
+                length: NoteDuration.Quaver,
                 type: NoteType.Note,
             }
         ],

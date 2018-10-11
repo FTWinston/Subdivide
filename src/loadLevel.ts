@@ -18,7 +18,7 @@ export function getBarLength(level: ILevel) {
 }
 
 export function getSequenceLength(sequence: INote[]) {
-    return sequence.reduce((total, current) => total + current.duration, 0);
+    return sequence.reduce((total, current) => total + current.length, 0);
 }
 
 function populateBars(numBars: number, barLength: number, sequences: INote[][]) {

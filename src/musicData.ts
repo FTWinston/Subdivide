@@ -30,7 +30,7 @@ export const enum NoteType {
 }
 
 export interface INote {
-    duration: NoteDuration;
+    length: NoteDuration;
     type: NoteType;
 }
 

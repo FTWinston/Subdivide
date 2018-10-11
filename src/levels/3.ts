@@ -5,13 +5,13 @@ const level: ILevel = {
     noteSequences: [
         [
             {
-                duration: NoteDuration.Crotchet,
+                length: NoteDuration.Crotchet,
                 type: NoteType.Note,
             }
         ],
         [
             {
-                duration: NoteDuration.Crotchet,
+                length: NoteDuration.Crotchet,
                 type: NoteType.Rest,
             }
         ]

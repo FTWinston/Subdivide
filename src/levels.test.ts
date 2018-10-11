@@ -43,7 +43,7 @@ for (const level of levels) {
 
             for (const sequence of level.noteSequences) {
                 for (const note of sequence) {
-                    expect(validNoteDurations).toContain(note.duration);
+                    expect(validNoteDurations).toContain(note.length);
                 }
             }
         });
@@ -58,7 +58,7 @@ for (const level of levels) {
             
             for (const sequence of level.noteSequences) {
                 for (let i=0; i<sequence.length; i++) {
-                    const groupNoteDuration = sequence[i].duration;
+                    const groupNoteDuration = sequence[i].length;
                     
                     const isTriplet = tripletTypes.indexOf(groupNoteDuration) !== -1;
                     if (!isTriplet) {
@@ -71,8 +71,8 @@ for (const level of levels) {
                         continue;
                     }
 
-                    expect(sequence[i + 1].duration).toBe(groupNoteDuration);
-                    expect(sequence[i + 2].duration).toBe(groupNoteDuration);
+                    expect(sequence[i + 1].length).toBe(groupNoteDuration);
+                    expect(sequence[i + 2].length).toBe(groupNoteDuration);
 
                     i = lastTripletIndex;
                 }
