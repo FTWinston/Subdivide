@@ -5,6 +5,7 @@
     background-repeat: no-repeat;
     background-position: bottom left;
     display: inline-block;
+    position: relative;
 }
 
 .note[data-duration="1"] {
@@ -19,6 +20,23 @@
     color: green;
 }
 
-.note--triplet {
-    color: red;
+.note--startGroup.note--triplet::before,
+.note--startGroup.note--triplet + .note--triplet::before {
+    color: black;
+    background-color: black;
+    display: block;
+    width: 2.05em;
+    height: 0.3em;
+    content: "";
+    position: absolute;
+    top: -0.25em;
+    left: 0.7em;
+}
+
+.note--startGroup.note--triplet + .note--triplet::after {
+    color: black;
+    content: "3";
+    position: absolute;
+    top: -1.5em;
+    left: 0.4em;
 }

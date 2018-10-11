@@ -15,7 +15,7 @@
     margin: 0.5em 0;
 }
 
-.music__bar {
+.music__bar:not(.music__bar--timeSignature) {
     border-left: solid black 0.05em;
 }
 
@@ -23,10 +23,14 @@
     border-right: double black 0.25em;
 }
 
+.music__bar--timeSignature + .music__bar {
+    border-left: none !important;
+}
+
 .music__tempo {
     position: absolute;
     top: 0;
-    left: 0;
+    left: 0.5em;
 
     display: flex;
     align-items: baseline;
@@ -37,25 +41,11 @@
     background-size: 75%;
 }
 
-.music__tempo[data-beat="4"]::before {
-    content: 'crotchet = ';
-}
-
-.music__tempo[data-beat="2"]::before {
-    content: 'minim = ';
-}
-
-.music__tempo[data-beat="8"]::before {
-    content: 'quaver = ';
-}
-
-.music__bar--timeSignature + .music__bar {
-    border-left: none !important;
-}
-
 .timeSignature {
     display: flex;
     flex-direction: column;
     font-weight: bolder;
     padding: 0 0.5em;
+    position: relative;
+    top: 0.1em;
 }

@@ -17,6 +17,7 @@ import './NoteDisplay.css';
 interface IProps {
     duration: NoteLength;
     type: NoteType;
+    groupPos?: number;
 }
 
 export class NoteDisplay extends React.PureComponent<IProps> {
@@ -46,42 +47,46 @@ export class NoteDisplay extends React.PureComponent<IProps> {
             case NoteLength.TripletQuaver:
             case NoteLength.TripletSemiquaver:
                 classes += ' note--triplet';
+
+                if (this.props.groupPos !== undefined && this.props.groupPos % 3 === 1) {
+                    classes += ' note--startGroup';
+                }
                 break;
         }
 
         switch (this.props.duration) {
             case NoteLength.Semibreve:
                 return this.props.type === NoteType.Rest
-                    ? <SemibreveRest className={classes} />
-                    : <Semibreve className={classes} />;
+                    ? <div className={classes}><SemibreveRest /></div>
+                    : <div className={classes}><Semibreve /></div>;
 
             case NoteLength.Minim:
             case NoteLength.DottedMinim:
             case NoteLength.TripletMinim:
                 return this.props.type === NoteType.Rest
-                    ? <MinimRest className={classes} />
-                    : <Minim className={classes} />;
+                    ? <div className={classes}><MinimRest /></div>
+                    : <div className={classes}><Minim /></div>;
                     
             case NoteLength.Crotchet:
             case NoteLength.DottedCrotchet:
             case NoteLength.TripletCrotchet:
                 return this.props.type === NoteType.Rest
-                    ? <CrotchetRest className={classes} />
-                    : <Crotchet className={classes} />;
+                    ? <div className={classes}><CrotchetRest /></div>
+                    : <div className={classes}><Crotchet /></div>;
                     
             case NoteLength.Quaver:
             case NoteLength.DottedQuaver:
             case NoteLength.TripletQuaver:
                 return this.props.type === NoteType.Rest
-                    ? <QuaverRest className={classes} />
-                    : <Quaver className={classes} />;
+                    ? <div className={classes}><QuaverRest /></div>
+                    : <div className={classes}><Quaver /></div>;
                     
             case NoteLength.Semiquaver:
             case NoteLength.DottedSemiquaver:
             case NoteLength.TripletSemiquaver:
                 return this.props.type === NoteType.Rest
-                    ? <SemiquaverRest className={classes} />
-                    : <Semiquaver className={classes} />;
+                    ? <div className={classes}><SemiquaverRest /></div>
+                    : <div className={classes}><Semiquaver /></div>;
 
             default:
                 return null;
