@@ -24,6 +24,10 @@ export function determineRhythm(bars: INote[][], tempo: Tempo): IRhythm {
             }
         }
     }
+    
+    if (currentWait > 0) {
+        rhythm.beatSeparation.push(currentWait);
+    }
 
     return rhythm;
 }

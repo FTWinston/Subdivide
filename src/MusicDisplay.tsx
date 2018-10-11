@@ -103,9 +103,6 @@ export class MusicDisplay extends React.PureComponent<IProps, IState> {
             await this.delay(beat);
         }
 
-        this.beat();
-        await this.delay(1000);
-
         this.setState({
             playing: false,
         });
