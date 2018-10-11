@@ -49,3 +49,8 @@ export interface ILevel extends IMusicBase {
 export interface IMusic extends IMusicBase {
     bars: INote[][];
 }
+
+export interface IRhythm {
+    startWithRest: boolean;
+    beatSeparation: number[];
+}
