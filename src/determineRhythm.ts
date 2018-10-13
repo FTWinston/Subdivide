@@ -1,13 +1,10 @@
-import { INote, IRhythm, NoteType, Tempo } from './musicData';
+import { INote, NoteType, Rhythm, Tempo } from './musicData';
 
-export function determineRhythm(bars: INote[][], tempo: Tempo): IRhythm {
-    const rhythm: IRhythm = {
-        beatSeparation: [],
-        startWithRest: bars[0][0].type === NoteType.Rest,
-    };
+export function determineRhythm(bars: INote[][], tempo: Tempo, initialDelayMs: number = 0): Rhythm {
+    const rhythm: Rhythm = [];
 
     const tickDuration = determineTickDuration(tempo);
-    let currentWait = 0;
+    let currentWait = initialDelayMs;
 
     for (const bar of bars) {
         for (const note of bar) {
@@ -17,22 +14,20 @@ export function determineRhythm(bars: INote[][], tempo: Tempo): IRhythm {
                 currentWait += noteDuration;
             }
             else {
-                if (currentWait > 0) {
-                    rhythm.beatSeparation.push(currentWait);
-                }
+                rhythm.push(currentWait);
                 currentWait = noteDuration;
             }
         }
     }
     
     if (currentWait > 0) {
-        rhythm.beatSeparation.push(currentWait);
+        rhythm.push(currentWait);
     }
 
     return rhythm;
 }
 
-function determineTickDuration(tempo: Tempo) {
+export function determineTickDuration(tempo: Tempo) {
     const noteLength = tempo[0];
     const perMinute = tempo[1];
 

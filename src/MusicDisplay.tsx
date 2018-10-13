@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { determineRhythm } from './determineRhythm';
+import { determineRhythm, determineTickDuration } from './determineRhythm';
 import { INote, NoteLength, NoteType, Tempo, TimeSignature } from './musicData';
 import './MusicDisplay.css';
 import { NoteDisplay } from './NoteDisplay';
+import { playRhythm, stopRhythm } from './playRhythm';
 
 interface IProps {
     timeSignature: TimeSignature;
@@ -15,8 +16,6 @@ interface IState {
 }
 
 export class MusicDisplay extends React.PureComponent<IProps, IState> {
-    private timeout: NodeJS.Timer | undefined;
-
     constructor(props: IProps) {
         super(props);
         this.state = {
@@ -76,17 +75,8 @@ export class MusicDisplay extends React.PureComponent<IProps, IState> {
         );
     }
 
-    private async delay(ms: number) {
-        return new Promise( resolve => {
-            this.timeout = setTimeout(resolve, ms);
-        } );
-    }
-
     private stopRhythm() {
-        if (this.timeout !== undefined) {
-            clearTimeout(this.timeout);
-            this.timeout = undefined;
-        }
+        stopRhythm();
 
         this.setState({
             playing: false,
@@ -94,27 +84,14 @@ export class MusicDisplay extends React.PureComponent<IProps, IState> {
     }
 
     private async playRhythm() {
-        const rhythm = determineRhythm(this.props.bars, this.props.tempo);
+        const initialDelay = this.props.timeSignature[0] * this.props.timeSignature[1] * determineTickDuration(this.props.tempo);
+        const rhythm = determineRhythm(this.props.bars, this.props.tempo, initialDelay);
     
         this.setState({
             playing: true,
         });
 
-        const beats = rhythm.beatSeparation.slice();
-
-        if (rhythm.startWithRest) {
-            await this.delay(beats.shift()!);
-        }
-
-        while (true) {
-            const beat = beats.shift();
-            if (beat === undefined) {
-                break;
-            }
-
-            this.beat();
-            await this.delay(beat);
-        }
+        await playRhythm(rhythm, () => this.beat());
 
         this.setState({
             playing: false,
