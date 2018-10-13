@@ -26,6 +26,8 @@ interface IState {
 }
 
 export class LevelDisplay extends React.PureComponent<IProps, IState> {
+    private timeSinceUserBeat: number;
+    
     constructor(props: IProps) {
         super(props);
 
@@ -39,20 +41,45 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
         };
     }
 
+    public componentWillReceiveProps(newProps: IProps) {
+        this.stopRhythm()
+        const level = loadLevel(newProps.level);
+
+        this.setState({
+            bars: level.bars,
+            correctRhythm: [],
+            userRhythm: [],
+        });
+    }
+
+    public componentWillUnmount() {
+        this.stopRhythm();
+    }
+
     public render() {
-        const onClick = this.state.playbackStatus === PlaybackStatus.Playing
+        const startStop = this.state.playbackStatus === PlaybackStatus.Playing
             ? () => this.stopRhythm()
             : () => this.playRhythm();
+
+        const startStopLabel = this.state.playbackStatus === PlaybackStatus.Before
+            ? 'Start playing'
+            : this.state.playbackStatus === PlaybackStatus.Playing
+                ? 'Stop playing'
+                : 'Play again';
+
+        const userBeat = this.state.playbackStatus === PlaybackStatus.Playing
+            ? () => this.userBeat()
+            : undefined;
 
         let correctRhythm;
         let userRhythm;
         if (this.state.playbackStatus === PlaybackStatus.After) {
-            correctRhythm = <RhythmDisplay rhythm={this.state.correctRhythm} />
-            userRhythm = <RhythmDisplay rhythm={this.state.userRhythm} />
+            correctRhythm = <RhythmDisplay rhythm={this.state.correctRhythm} forUser={false} />
+            userRhythm = <RhythmDisplay rhythm={this.state.userRhythm} forUser={true} />
         }
 
         return (
-            <div className="screen screen--level" onClickCapture={onClick}>
+            <div className="screen screen--level" onTouchStartCapture={userBeat}>
                 <h2>{this.props.level.name}</h2>
                 <MusicDisplay
                     bars={this.state.bars}
@@ -63,6 +90,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
                 {userRhythm}
 
                 <div className="actions">
+                    <button onClick={startStop}>{startStopLabel}</button>
                     <button onClick={this.props.next} disabled={this.props.next === undefined}>Next level</button>
                     <button onClick={this.props.cancel}>Go back</button>
                 </div>
@@ -70,8 +98,11 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
         )
     }
 
+    private keyDownHandle = () => this.userBeat();
+
     private stopRhythm() {
         stopRhythm();
+        document.removeEventListener('keydown', this.keyDownHandle);
 
         this.setState({
             playbackStatus: PlaybackStatus.Before,
@@ -88,14 +119,39 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
             userRhythm: [],
         });
 
+        document.addEventListener('keydown', this.keyDownHandle);
+
+        this.timeSinceUserBeat = new Date().getTime();
         await playRhythm(rhythm, () => this.beat());
 
-        this.setState({
-            playbackStatus: PlaybackStatus.After,
+        document.removeEventListener('keydown', this.keyDownHandle);
+
+        // add a remaining entry to userRhythm, to pad it to the full length
+        const now = new Date().getTime();
+        const trailingDelay = now - this.timeSinceUserBeat;
+
+        this.setState(state => {
+            return {
+                playbackStatus: PlaybackStatus.After,
+                userRhythm: state.userRhythm.concat(trailingDelay),
+            }
         });
     }
 
     private beat() {
         console.log('beat');
+    }
+
+    private userBeat() {
+        const now = new Date().getTime();
+        const beatDelay = now - this.timeSinceUserBeat;
+        this.timeSinceUserBeat = now;
+        console.log('user beat');
+
+        this.setState(state => {
+            return {
+                userRhythm: state.userRhythm.concat(beatDelay)
+            }
+        });
     }
 }

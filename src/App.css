@@ -1,3 +1,7 @@
-.App {
-  text-align: center;
+.actions {
+  margin: 1em 0;
+}
+
+.actions > * + * {
+  margin-left: 2em;
 }

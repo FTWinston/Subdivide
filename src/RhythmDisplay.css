@@ -2,10 +2,23 @@
     background-color: #e0e0e0;
     height: 3em;
     display: flex;
+    align-items: stretch;
 }
 
 .rhythm + .rhythm {
-    margin-top: 1em;
+    border-top: dashed black 1px;
+}
+
+.rhythm__title {
+    width: 20em;
+    align-self: center;
+    margin-left: 1em;
+}
+
+.rhythm__image {
+    display: flex;
+    align-items: stretch;
+    flex-grow: 1;
 }
 
 .rhythm__spacer {
@@ -13,5 +26,9 @@
 }
 
 .rhythm__spacer + .rhythm__spacer {
-    border-left: solid red 0.1em;
+    border-left: solid black 0.1em;
+}
+
+.rhythm--user .rhythm__spacer {
+    border-color: red;
 }
