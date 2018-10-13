@@ -134,7 +134,37 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
             return {
                 playbackStatus: PlaybackStatus.After,
                 userRhythm: state.userRhythm.concat(trailingDelay),
-            }
+            };
+        });
+
+        this.removeInitialDelay();
+    }
+
+    private removeInitialDelay() {
+        const initialDelayCorrect = this.state.correctRhythm[0];
+        const initialDelayUser = this.state.userRhythm[0];
+
+        let newDelayCorrect = 0;
+        let newDelayUser = 0;
+
+        if (initialDelayCorrect < initialDelayUser) {
+            newDelayUser = initialDelayUser - initialDelayCorrect;
+        }
+        else {
+            newDelayCorrect = initialDelayCorrect - initialDelayUser;
+        }
+
+        
+        this.setState(state => {
+            const correct = state.correctRhythm.slice();
+            const user = state.userRhythm.slice();
+            correct[0] = newDelayCorrect;
+            user[0] = newDelayUser;
+
+            return {
+                correctRhythm: correct,
+                userRhythm: user,
+            };
         });
     }
 
