@@ -1,9 +1,9 @@
-import { levels } from './levels';
+import { getLevels } from './levels';
 import { getBarLength, getSequenceLength, loadLevel } from './loadLevel';
 import { NoteLength } from './musicData';
 
 let iLevel = 1;
-for (const level of levels) {
+for (const level of getLevels()) {
     describe(`level ${iLevel}: ${level.name}`, () => {
 
         test('has notes', () => {

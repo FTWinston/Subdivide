@@ -1,29 +1,47 @@
 import * as React from 'react';
 import './App.css';
-import { levels } from './levels';
-import { loadLevel } from './loadLevel';
-import { MusicDisplay } from './MusicDisplay';
+import { LevelDisplay } from './LevelDisplay';
+import { getLevels } from './levels';
+import { LevelSelect } from './LevelSelect';
+import { ILevel } from './musicData';
 
-class App extends React.Component {
+interface IState {
+    levels: ILevel[];
+    currentLevel?: ILevel;
+}
+
+class App extends React.Component<{}, IState> {
+    constructor(props: {}) {
+        super(props);
+
+        this.state = {
+            levels: getLevels(),
+        };
+    }
+
     public render() {
-        const music = levels.map((l, i) => {
-            const data = loadLevel(l);
+        if (this.state.currentLevel === undefined) {
+            const selectLevel = (level: ILevel) => this.setState({
+                currentLevel: level,
+            });
 
-            return [
-                <h2 key={i.toString() + 'h'}>{data.name}</h2>,
-                <MusicDisplay key={i}
-                    bars={data.bars}
-                    tempo={data.tempo}
-                    timeSignature={data.timeSignature}
-                />
-            ];
+            return <LevelSelect levels={this.state.levels} onSelect={selectLevel} />
+        }
+
+        const clearSelection = () => this.setState({
+            currentLevel: undefined,
         });
 
-        return (
-        <div className="App">
-            {music}
-        </div>
-        );
+        const selectedIndex = this.state.levels.indexOf(this.state.currentLevel);
+        const selectNext = selectedIndex < this.state.levels.length - 1
+            ? () => this.setState({ currentLevel: this.state.levels[selectedIndex + 1] })
+            : undefined;
+
+        return <LevelDisplay
+            level={this.state.currentLevel}
+            cancel={clearSelection}
+            next={selectNext}
+        />
     }
 }
 

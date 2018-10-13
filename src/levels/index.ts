@@ -5,11 +5,13 @@ import level4 from './4';
 import level5 from './5';
 import level6 from './6';
 
-export const levels = [
-    level1,
-    level2,
-    level3,
-    level4,
-    level5,
-    level6,
-];
+export function getLevels() {
+    return [
+        level1,
+        level2,
+        level3,
+        level4,
+        level5,
+        level6,
+    ];
+}

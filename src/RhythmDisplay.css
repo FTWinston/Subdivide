@@ -1,0 +1,17 @@
+.rhythm {
+    background-color: #e0e0e0;
+    height: 3em;
+    display: flex;
+}
+
+.rhythm + .rhythm {
+    margin-top: 1em;
+}
+
+.rhythm__spacer {
+    height: 100%;
+}
+
+.rhythm__spacer + .rhythm__spacer {
+    border-left: solid red 0.1em;
+}
