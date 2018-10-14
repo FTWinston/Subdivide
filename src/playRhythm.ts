@@ -20,7 +20,7 @@ export async function playRhythm(rhythm: Rhythm, beat: () => void) {
 
 let timeout: NodeJS.Timer | undefined;
 
-async function delay(ms: number) {
+export async function delay(ms: number) {
     return new Promise( resolve => {
         timeout = setTimeout(resolve, ms);
     } );

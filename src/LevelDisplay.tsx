@@ -3,7 +3,7 @@ import { determineRhythm, determineTickDuration } from './determineRhythm';
 import { loadLevel } from './loadLevel';
 import { ILevel, INote, Rhythm } from './musicData';
 import { MusicDisplay } from './MusicDisplay';
-import { playRhythm, stopRhythm } from './playRhythm';
+import { delay, playRhythm, stopRhythm } from './playRhythm';
 import { RhythmDisplay } from './RhythmDisplay';
 
 interface IProps {
@@ -23,6 +23,7 @@ interface IState {
     playbackStatus: PlaybackStatus;
     correctRhythm: Rhythm;
     userRhythm: Rhythm;
+    introBeat?: number;
 }
 
 export class LevelDisplay extends React.PureComponent<IProps, IState> {
@@ -57,15 +58,26 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
     }
 
     public render() {
-        const startStop = this.state.playbackStatus === PlaybackStatus.Playing
-            ? () => this.stopRhythm()
-            : () => this.playRhythm();
+        let actions: JSX.Element | undefined;
 
-        const startStopLabel = this.state.playbackStatus === PlaybackStatus.Before
-            ? 'Start playing'
-            : this.state.playbackStatus === PlaybackStatus.Playing
-                ? 'Stop playing'
+        if (this.state.playbackStatus === PlaybackStatus.Playing) {
+            actions = this.state.introBeat === undefined
+                ? undefined
+                : <h1>{this.state.introBeat}</h1>;
+        }
+        else {
+            const startPlaying = () => this.playRhythm();
+
+            const startLabel = this.state.playbackStatus === PlaybackStatus.Before
+                ? 'Start playing'
                 : 'Play again';
+
+            actions = <div className="actions">
+                <button onClick={startPlaying}>{startLabel}</button>
+                <button onClick={this.props.next} disabled={this.props.next === undefined}>Next level</button>
+                <button onClick={this.props.cancel}>Go back</button>
+            </div>
+        }
 
         const userBeat = this.state.playbackStatus === PlaybackStatus.Playing
             ? () => this.userBeat()
@@ -88,12 +100,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
                 />
                 {correctRhythm}
                 {userRhythm}
-
-                <div className="actions">
-                    <button onClick={startStop}>{startStopLabel}</button>
-                    <button onClick={this.props.next} disabled={this.props.next === undefined}>Next level</button>
-                    <button onClick={this.props.cancel}>Go back</button>
-                </div>
+                {actions}
             </div>
         )
     }
@@ -110,8 +117,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
     }
 
     private async playRhythm() {
-        const initialDelay = this.props.level.timeSignature[0] * this.props.level.timeSignature[1] * determineTickDuration(this.props.level.tempo);
-        const rhythm = determineRhythm(this.state.bars, this.props.level.tempo, initialDelay);
+        const rhythm = determineRhythm(this.state.bars, this.props.level.tempo);
     
         this.setState({
             correctRhythm: rhythm,
@@ -122,6 +128,8 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
         document.addEventListener('keydown', this.keyDownHandle);
 
         this.timeSinceUserBeat = new Date().getTime();
+
+        await this.beatIntro();
         await playRhythm(rhythm, () => this.beat());
 
         document.removeEventListener('keydown', this.keyDownHandle);
@@ -137,11 +145,13 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
             };
         });
 
-        this.removeInitialDelay();
+        this.applyInitialDelay();
     }
 
-    private removeInitialDelay() {
-        const initialDelayCorrect = this.state.correctRhythm[0];
+    private applyInitialDelay() {
+        const initialDelayCorrect = determineTickDuration(this.props.level.tempo)
+            * this.props.level.timeSignature[0]
+            * this.props.level.timeSignature[1];
         const initialDelayUser = this.state.userRhythm[0];
 
         let newDelayCorrect = 0;
@@ -166,6 +176,25 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
                 userRhythm: user,
             };
         });
+    }
+    
+    private async beatIntro() {
+        const oneBeat = determineTickDuration(this.props.level.tempo) * this.props.level.timeSignature[1];
+        const numBeats = this.props.level.timeSignature[0];
+
+        for (let i = 1; i <= numBeats; i++ ) {
+            console.log(i.toString());
+
+            this.setState({
+                introBeat: i,
+            })
+
+            await delay(oneBeat);
+        }
+
+        this.setState({
+            introBeat: undefined,
+        })
     }
 
     private beat() {
