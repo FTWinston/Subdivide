@@ -12,9 +12,9 @@
 
 .countIn__beat {
     position: relative;
-    opacity: 0.75;
     animation-name: introBeat;
-    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+    animation-fill-mode: both;
 }
 
 .screen--level .rhythm {
