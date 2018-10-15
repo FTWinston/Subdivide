@@ -64,10 +64,6 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
             ? <CountIn type={this.props.countIn} tempo={this.props.level.tempo} timeSignature={this.props.level.timeSignature} />
             : this.renderActions()
 
-        const userBeat = this.state.playbackStatus === PlaybackStatus.Playing
-            ? () => this.userBeat()
-            : undefined;
-
         let correctRhythm;
         let userRhythm;
         if (this.state.playbackStatus === PlaybackStatus.After) {
@@ -76,7 +72,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
         }
 
         return (
-            <div className="screen screen--level" onTouchStartCapture={userBeat}>
+            <div className="screen screen--level">
                 <h2>{this.props.level.name}</h2>
                 <MusicDisplay
                     bars={this.state.bars}
@@ -104,11 +100,23 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
         </div>
     }
 
-    private keyDownHandle = () => this.userBeat();
+    private userBeatHandle = () => this.userBeat();
+
+    private startListeningForBeats() {
+        document.addEventListener('keydown', this.userBeatHandle);
+        document.addEventListener('touchstart', this.userBeatHandle);
+        document.addEventListener('mousedown', this.userBeatHandle);
+    }
+
+    private stopListeningForBeats() {
+        document.removeEventListener('keydown', this.userBeatHandle);
+        document.removeEventListener('touchstart', this.userBeatHandle);
+        document.removeEventListener('mousedown', this.userBeatHandle);
+    }
 
     private stopRhythm() {
         stopRhythm();
-        document.removeEventListener('keydown', this.keyDownHandle);
+        this.stopListeningForBeats();
 
         this.setState({
             playbackStatus: PlaybackStatus.Before,
@@ -124,7 +132,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
             userRhythm: [],
         });
 
-        document.addEventListener('keydown', this.keyDownHandle);
+        this.startListeningForBeats();
 
         this.timeSinceUserBeat = new Date().getTime();
 
@@ -133,7 +141,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
 
         await playRhythm(rhythm, () => this.beat());
 
-        document.removeEventListener('keydown', this.keyDownHandle);
+        this.stopListeningForBeats();
 
         // add a remaining entry to userRhythm, to pad it to the full length
         const now = new Date().getTime();
