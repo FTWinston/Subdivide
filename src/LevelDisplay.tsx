@@ -145,7 +145,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
         this.timeSinceUserBeat = new Date().getTime();
 
         const oneBeat = determineTickDuration(this.props.level.tempo) * this.props.level.timeSignature[1];
-        const numBeats = this.props.level.timeSignature[0] + 1; // an extra beat to the delay, to allow for the animation
+        const numBeats = this.props.level.timeSignature[0] + 1.5; // add extra beat-and-a-half delay, to allow for the animation
         const initialDelay = oneBeat * numBeats;
         await delay(initialDelay);
 
