@@ -104,13 +104,11 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
 
     private startListeningForBeats() {
         document.addEventListener('keydown', this.userBeatHandle);
-        document.addEventListener('touchstart', this.userBeatHandle);
         document.addEventListener('mousedown', this.userBeatHandle);
     }
 
     private stopListeningForBeats() {
         document.removeEventListener('keydown', this.userBeatHandle);
-        document.removeEventListener('touchstart', this.userBeatHandle);
         document.removeEventListener('mousedown', this.userBeatHandle);
     }
 
