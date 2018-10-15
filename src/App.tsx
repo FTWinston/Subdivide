@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './App.css';
+import { CountInType } from './CountIn';
 import { LevelDisplay } from './LevelDisplay';
 import { getLevels } from './levels';
 import { LevelSelect } from './LevelSelect';
@@ -40,6 +41,7 @@ class App extends React.Component<{}, IState> {
         return <LevelDisplay
             level={this.state.currentLevel}
             cancel={clearSelection}
+            countIn={CountInType.OneBar}
             next={selectNext}
         />
     }

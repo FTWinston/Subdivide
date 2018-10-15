@@ -4,40 +4,6 @@
     align-items: center;
 }
 
-.countIn {
-    font-size: 2em;
-    display: flex;
-    justify-content: center;
-}
-
-.countIn__beat {
-    position: relative;
-    animation-name: introBeat;
-    animation-timing-function: ease-in;
-    animation-fill-mode: both;
-}
-
 .screen--level .rhythm {
     align-self: stretch;
-}
-
-@keyframes introBeat {
-    0% {
-        opacity: 0.75;
-        top: 0;
-    }
-    50% {
-        opacity: 1;
-        top: 1em;
-    }
-    51% {
-        opacity: 1;
-        top: 1em;
-        font-weight: bold;
-    }
-    100% {
-        opacity: 0;
-        top: 1em;
-        font-weight: bold;
-    }
 }
