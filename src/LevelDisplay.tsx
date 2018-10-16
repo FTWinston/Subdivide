@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { CountIn, CountInType } from './CountIn';
 import { determineRhythm } from './determineRhythm';
+import { ErrorBoundary } from './ErrorBoundary';
 import './LevelDisplay.css';
 import { loadLevel } from './loadLevel';
 import { ILevel, INote, Rhythm } from './musicData';
@@ -74,11 +75,13 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
         return (
             <div className="screen screen--level">
                 <h2>{this.props.level.name}</h2>
-                <MusicDisplay
-                    bars={this.state.bars}
-                    tempo={this.props.level.tempo}
-                    timeSignature={this.props.level.timeSignature}
-                />
+                <ErrorBoundary>
+                    <MusicDisplay
+                        bars={this.state.bars}
+                        tempo={this.props.level.tempo}
+                        timeSignature={this.props.level.timeSignature}
+                    />
+                </ErrorBoundary>
                 {correctRhythm}
                 {userRhythm}
                 {bottomSection}

@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { Flow as VF } from 'vexflow';
 import { INote, NoteLength, NoteType, Tempo, TimeSignature } from './musicData';
 import './MusicDisplay.css';
-import { NoteDisplay } from './NoteDisplay';
+
 interface IProps {
     timeSignature: TimeSignature;
     tempo: Tempo;
@@ -9,52 +10,121 @@ interface IProps {
 }
 
 export class MusicDisplay extends React.PureComponent<IProps> {
+    private element: HTMLDivElement;
     public render() {
-        const bars = this.props.bars.map((b, i) => this.renderBar(b, i));
-        
-        return (
-            <div className="music">
-                {this.renderTempo()}
-                {this.renderTimeSignature()}
-                {bars}
-            </div>
-        );
+        return <div className="music" ref={e => this.element = e!} />;
     }
 
-    private renderTempo() {
-        return <div className="music__tempo"><NoteDisplay duration={this.props.tempo[0]} type={NoteType.Note} /> = {this.props.tempo[1]}</div>
+    public componentDidMount() {
+        this.renderMusic();
     }
 
-    private renderTimeSignature() {
-        const numBeats = this.props.timeSignature[0];
-        const measure = NoteLength.Semibreve / this.props.timeSignature[1];
-
-        return <div className="music__bar music__bar--timeSignature timeSignature">
-            <div className="timeSignature__beats">{numBeats}</div>
-            <div className="timeSignature__measure">{measure}</div>
-        </div>;
+    public componentDidUpdate() {
+        this.renderMusic();
     }
 
-    private renderBar(elements: INote[], key: number) {
-        let lastLength = 0;
-        let groupPos = 0;
-        
-        const elementDisplay = elements.map((e, i) => {
-            if (e.length === lastLength) {
-                groupPos ++;
-            }
-            else {
-                lastLength = e.length;
-                groupPos = 1;
-            }
+    private renderMusic() {
+        while (this.element.hasChildNodes()) {
+            this.element.removeChild(this.element.lastChild!);
+        }
 
-            return <NoteDisplay key={i} duration={e.length} type={e.type} groupPos={groupPos} />
+        const renderer = new VF.Renderer(this.element, VF.Renderer.Backends.SVG);
+        renderer.resize(800,200);
+
+        const context = renderer.getContext() as VF.SVGContext;
+
+        let prevBar: VF.Stave | undefined;
+        this.props.bars.map((bar, i) => {
+            const barStave = this.createBar(i === this.props.bars.length - 1, prevBar);
+            prevBar = barStave;
+
+            const notes = bar.map(note => this.createVfNote(note));
+
+            const voice = new VF.Voice({num_beats: this.props.timeSignature[0], beat_value: NoteLength.Semibreve / this.props.tempo[0]});
+
+            voice.addTickables(notes);
+
+            new VF.Formatter().joinVoices([voice]).format([voice], 400);
+
+            voice.draw(context, barStave);
+
+            barStave.setContext(context).draw();
         });
+    }
 
-        return (
-            <div className="music__bar" key={key}>
-                {elementDisplay}
-            </div>
-        );
+    private createBar(isLast: boolean, prevBar: VF.Stave | undefined) {
+        const barWidth = 400;
+        const bar = new VF.Stave(prevBar === undefined ? 10 : barWidth + prevBar.getX(), 40, barWidth);
+        bar.setEndBarType(isLast ? VF.Barline.type.DOUBLE : VF.Barline.type.SINGLE);
+
+        if (prevBar === undefined) {
+            bar.setBegBarType(VF.Barline.type.NONE);
+
+            const numBeats = this.props.timeSignature[0];
+            const measure = NoteLength.Semibreve / this.props.timeSignature[1];
+            bar.addTimeSignature(`${numBeats}/${measure}`);
+
+            bar.setTempo({
+                bpm: this.props.tempo[1],
+                dots: 0,
+                duration: (NoteLength.Semibreve / this.props.tempo[0]).toString(),
+            }, 0);
+        }
+        
+        return bar;
+    }
+
+    private createVfNote(note: INote) {
+        let duration: string;
+        let pitch: string;
+
+        switch (note.length) {
+            case NoteLength.Semibreve:
+                duration = 'w'; break;
+
+            case NoteLength.Minim:
+                duration = 'h'; break;
+
+            case NoteLength.DottedMinim:
+                duration = 'hd'; break;
+
+            // case NoteLength.TripletMinim:
+                    
+            case NoteLength.Crotchet:
+                duration = 'q'; break;
+
+            case NoteLength.DottedCrotchet:
+                duration = 'qd'; break;
+            
+            // case NoteLength.TripletCrotchet:
+                    
+            case NoteLength.Quaver:
+                duration = '8'; break;
+
+            case NoteLength.DottedQuaver:
+                duration = '8d'; break;
+
+            // case NoteLength.TripletQuaver:
+            
+            case NoteLength.Semiquaver:
+                duration = '16'; break;
+            case NoteLength.DottedSemiquaver:
+                duration = '16d'; break;
+            
+            // case NoteLength.TripletSemiquaver:
+
+            default:
+                duration = ''; break;
+        }
+
+        if (note.type === NoteType.Rest) {
+            pitch = 'b/4';
+            duration += 'r';
+        }
+        else {
+            pitch = 'g/4';
+        }
+
+        return new VF.StaveNote({clef: 'treble', keys: [pitch], duration });
     }
 }
