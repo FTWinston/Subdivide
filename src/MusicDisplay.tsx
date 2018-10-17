@@ -9,33 +9,47 @@ interface IProps {
     bars: INote[][];
 }
 
+const barWidth = 400;
+const barSpacing = 100;
+const firstBarX = 0;
+
 export class MusicDisplay extends React.PureComponent<IProps> {
     private element: HTMLDivElement;
+
     public render() {
         return <div className="music" ref={e => this.element = e!} />;
     }
 
     public componentDidMount() {
         this.renderMusic();
+
+        window.addEventListener('resize', this.resizeHandler);
+    }
+
+    public componentWillUnmount() {
+        window.removeEventListener('resize', this.resizeHandler);
     }
 
     public componentDidUpdate() {
         this.renderMusic();
     }
 
+    private resizeHandler = () => this.renderMusic();
+    
     private renderMusic() {
         while (this.element.hasChildNodes()) {
             this.element.removeChild(this.element.lastChild!);
         }
 
         const renderer = new VF.Renderer(this.element, VF.Renderer.Backends.SVG);
-        renderer.resize(800,200);
 
-        const context = renderer.getContext() as VF.SVGContext;
+        const maxWidth = this.sizeToFit(renderer);
+
+        const context = renderer.getContext();
 
         let prevBar: VF.Stave | undefined;
         this.props.bars.map((bar, i) => {
-            const barStave = this.createBar(i === this.props.bars.length - 1, prevBar);
+            const barStave = this.createBar(i === this.props.bars.length - 1, prevBar, maxWidth);
             prevBar = barStave;
 
             const notes = bar.map(note => this.createVfNote(note));
@@ -52,24 +66,48 @@ export class MusicDisplay extends React.PureComponent<IProps> {
         });
     }
 
-    private createBar(isLast: boolean, prevBar: VF.Stave | undefined) {
-        const barWidth = 400;
-        const bar = new VF.Stave(prevBar === undefined ? 10 : barWidth + prevBar.getX(), 40, barWidth);
-        bar.setEndBarType(isLast ? VF.Barline.type.DOUBLE : VF.Barline.type.SINGLE);
+    private sizeToFit(renderer: VF.Renderer) {
+        let width = this.props.bars.length * barWidth + 10;
+        const height = Math.ceil(width / window.innerWidth) * barSpacing + 60;
+
+        width = Math.min(width, window.innerWidth);
+
+        renderer.resize(width, height);
+
+        return width;
+    }
+
+    private createBar(isLast: boolean, prevBar: VF.Stave | undefined, maxX: number) {
+        let bar;
 
         if (prevBar === undefined) {
+            bar = new VF.Stave(firstBarX, 40, barWidth);
+            
             bar.setBegBarType(VF.Barline.type.NONE);
 
             const numBeats = this.props.timeSignature[0];
             const measure = NoteLength.Semibreve / this.props.timeSignature[1];
-            bar.addTimeSignature(`${numBeats}/${measure}`);
+            bar.addTimeSignature(`${numBeats}/${measure}`, 25);
 
             bar.setTempo({
                 bpm: this.props.tempo[1],
                 dots: 0,
                 duration: (NoteLength.Semibreve / this.props.tempo[0]).toString(),
-            }, 0);
+            }, -10);
         }
+        else {
+            let x = barWidth + prevBar.getX();
+            let y = prevBar.getBottomY() - 130;
+
+            if (x + barWidth >= maxX) {
+                x = firstBarX;
+                y += barSpacing;
+            }
+
+            bar = new VF.Stave(x, y, barWidth);
+        }
+        
+        bar.setEndBarType(isLast ? VF.Barline.type.DOUBLE : VF.Barline.type.SINGLE);
         
         return bar;
     }
@@ -80,21 +118,21 @@ export class MusicDisplay extends React.PureComponent<IProps> {
 
         switch (note.length) {
             case NoteLength.Semibreve:
-                duration = 'w'; break;
+                duration = '1'; break;
 
             case NoteLength.Minim:
-                duration = 'h'; break;
+                duration = '2'; break;
 
             case NoteLength.DottedMinim:
-                duration = 'hd'; break;
+                duration = '2d'; break;
 
             // case NoteLength.TripletMinim:
                     
             case NoteLength.Crotchet:
-                duration = 'q'; break;
+                duration = '4'; break;
 
             case NoteLength.DottedCrotchet:
-                duration = 'qd'; break;
+                duration = '4d'; break;
             
             // case NoteLength.TripletCrotchet:
                     
