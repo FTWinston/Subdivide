@@ -56,13 +56,16 @@ export class MusicDisplay extends React.PureComponent<IProps> {
 
             const voice = new VF.Voice({num_beats: this.props.timeSignature[0], beat_value: NoteLength.Semibreve / this.props.tempo[0]});
 
+            voice.setStrict(false);
             voice.addTickables(notes);
 
-            new VF.Formatter().joinVoices([voice]).format([voice], 400);
+            new VF.Formatter()
+                .joinVoices([voice])
+                .format([voice], 400);
 
             voice.draw(context, barStave);
 
-            barStave.setContext(context).draw();
+            this.drawTriplets(barStave, context, notes, bar);
         });
     }
 
@@ -121,35 +124,32 @@ export class MusicDisplay extends React.PureComponent<IProps> {
                 duration = '1'; break;
 
             case NoteLength.Minim:
+            case NoteLength.TripletMinim:
                 duration = '2'; break;
 
             case NoteLength.DottedMinim:
                 duration = '2d'; break;
-
-            // case NoteLength.TripletMinim:
                     
             case NoteLength.Crotchet:
+            case NoteLength.TripletCrotchet:
                 duration = '4'; break;
 
             case NoteLength.DottedCrotchet:
                 duration = '4d'; break;
-            
-            // case NoteLength.TripletCrotchet:
                     
             case NoteLength.Quaver:
+            case NoteLength.TripletQuaver:
                 duration = '8'; break;
 
             case NoteLength.DottedQuaver:
                 duration = '8d'; break;
-
-            // case NoteLength.TripletQuaver:
             
             case NoteLength.Semiquaver:
+            case NoteLength.TripletSemiquaver:
                 duration = '16'; break;
+                
             case NoteLength.DottedSemiquaver:
                 duration = '16d'; break;
-            
-            // case NoteLength.TripletSemiquaver:
 
             default:
                 duration = ''; break;
@@ -164,5 +164,32 @@ export class MusicDisplay extends React.PureComponent<IProps> {
         }
 
         return new VF.StaveNote({clef: 'treble', keys: [pitch], duration });
+    }
+
+    private drawTriplets(barStave: VF.Stave, context: Vex.IRenderContext, notes: VF.StaveNote[], bar: INote[]){ 
+        let tuplet: VF.StaveNote[] = [];
+
+        for (let iNote = 0; iNote < notes.length; iNote++) {
+            const beatLength = bar[iNote].length;
+            if (beatLength !== NoteLength.TripletMinim
+                && beatLength !== NoteLength.TripletCrotchet
+                && beatLength !== NoteLength.TripletQuaver
+                && beatLength !== NoteLength.TripletSemiquaver) {
+                continue;
+            }
+                
+            tuplet.push(notes[iNote]);
+
+            if (tuplet.length === 3) {
+                const triplet = new VF.Tuplet(tuplet);
+                triplet
+                    .setContext(context)
+                    .draw();
+
+                tuplet = [];
+            }
+        }
+
+        barStave.setContext(context).draw();
     }
 }
