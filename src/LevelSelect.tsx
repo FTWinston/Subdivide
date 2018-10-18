@@ -9,7 +9,7 @@ interface IProps {
 
 export class LevelSelect extends React.PureComponent<IProps> {
     public render() {
-        const levels = this.props.levels.map((l, i) => <Link to={`level/${i+1}`} className="levelSelect__level" key={i}>#<b>{i}</b>: {l.name}</Link>);
+        const levels = this.props.levels.map((l, i) => <Link to={`level/${i+1}`} className="levelSelect__level" key={i}>#<b>{i+1}</b>: {l.name}</Link>);
 
         return (
         <div className="screen screen--levelSelect">
