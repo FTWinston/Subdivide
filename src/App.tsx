@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Route, Switch } from 'react-router';
 import './App.css';
 import { CountInType } from './CountIn';
 import { LevelDisplay } from './LevelDisplay';
@@ -8,43 +9,34 @@ import { ILevel } from './musicData';
 
 interface IState {
     levels: ILevel[];
-    currentLevel?: ILevel;
+    countIn: CountInType;
 }
 
-class App extends React.Component<{}, IState> {
+export class App extends React.Component<{}, IState> {
     constructor(props: {}) {
         super(props);
 
         this.state = {
+            countIn: CountInType.OneBar,
             levels: getLevels(),
         };
     }
 
     public render() {
-        if (this.state.currentLevel === undefined) {
-            const selectLevel = (level: ILevel) => this.setState({
-                currentLevel: level,
-            });
+        const renderLevel = (props: any) => {
+            const levelNum = parseInt(props.match.params.id, 10);
+            return <LevelDisplay
+                level={this.state.levels[levelNum - 1]}
+                countIn={this.state.countIn}
+                nextLevelNum={levelNum < this.state.levels.length - 1 ? levelNum + 1 : undefined}
+            />
+        };
 
-            return <LevelSelect levels={this.state.levels} onSelect={selectLevel} />
-        }
+        const renderLevelSelect = () => <LevelSelect levels={this.state.levels} />
 
-        const clearSelection = () => this.setState({
-            currentLevel: undefined,
-        });
-
-        const selectedIndex = this.state.levels.indexOf(this.state.currentLevel);
-        const selectNext = selectedIndex < this.state.levels.length - 1
-            ? () => this.setState({ currentLevel: this.state.levels[selectedIndex + 1] })
-            : undefined;
-
-        return <LevelDisplay
-            level={this.state.currentLevel}
-            cancel={clearSelection}
-            countIn={CountInType.OneBar}
-            next={selectNext}
-        />
+        return <Switch>
+            <Route path="/level/:id" render={renderLevel} />
+            <Route render={renderLevelSelect} />
+        </Switch>
     }
 }
-
-export default App;

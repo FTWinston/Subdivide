@@ -1,25 +1,22 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import './LevelSelect.css';
 import { ILevel } from './musicData';
 
 interface IProps {
     levels: ILevel[];
-    onSelect: (level: ILevel) => void;
 }
 
 export class LevelSelect extends React.PureComponent<IProps> {
     public render() {
-        const levels = this.props.levels.map((l, i) => {
-            const selected = () => this.props.onSelect(l);
-            return <li className="levelSelect__level" key={i} onClick={selected}>#<b>{i}</b>: {l.name}</li>
-        });
+        const levels = this.props.levels.map((l, i) => <Link to={`level/${i+1}`} className="levelSelect__level" key={i}>#<b>{i}</b>: {l.name}</Link>);
 
         return (
         <div className="screen screen--levelSelect">
             <h2>Select a level</h2>
-            <ul className="levelSelect">
+            <div className="levelSelect">
                 {levels}
-            </ul>
+            </div>
         </div>
         );
     }

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { CountIn, CountInType } from './CountIn';
 import { determineRhythm } from './determineRhythm';
 import { ErrorBoundary } from './ErrorBoundary';
@@ -12,8 +13,7 @@ import { RhythmDisplay } from './RhythmDisplay';
 interface IProps {
     countIn: CountInType;
     level: ILevel;
-    cancel: () => void;
-    next?: () => void;
+    nextLevelNum?: number;
 }
 
 const enum PlaybackStatus {
@@ -90,16 +90,16 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
     }
 
     private renderActions() {
-        const startPlaying = () => this.playRhythm();
+        const startPlaying = (e: React.MouseEvent<HTMLAnchorElement>) => { e.preventDefault(); this.playRhythm(); }
 
         const startLabel = this.state.playbackStatus === PlaybackStatus.Before
             ? 'Start playing'
             : 'Play again';
 
         return <div className="actions">
-            <button onClick={startPlaying}>{startLabel}</button>
-            <button onClick={this.props.next} disabled={this.props.next === undefined}>Next level</button>
-            <button onClick={this.props.cancel}>Go back</button>
+            <a href="" onClick={startPlaying}>{startLabel}</a>
+            {this.props.nextLevelNum !== undefined ? <Link to={`${this.props.nextLevelNum}`}>Next level</Link> : undefined}
+            <Link to="/">Back to menu</Link>
         </div>
     }
 
