@@ -43,14 +43,19 @@ export class MusicDisplay extends React.PureComponent<IProps> {
 
         const renderer = new VF.Renderer(this.element, VF.Renderer.Backends.SVG);
 
-        const maxWidth = this.sizeToFit(renderer);
+        const barsWide = this.sizeToFit(renderer);
+        let positionInRow = 0;
 
         const context = renderer.getContext();
 
         let prevBar: VF.Stave | undefined;
         this.props.bars.map((bar, i) => {
-            const barStave = this.createBar(i === this.props.bars.length - 1, prevBar, maxWidth);
+            const barStave = this.createBar(i === this.props.bars.length - 1, prevBar, positionInRow++ === 0);
+
             prevBar = barStave;
+            if (positionInRow >= barsWide) {
+                positionInRow = 0;
+            }
 
             const notes = bar.map(note => this.createVfNote(note));
 
@@ -70,17 +75,21 @@ export class MusicDisplay extends React.PureComponent<IProps> {
     }
 
     private sizeToFit(renderer: VF.Renderer) {
-        let width = this.props.bars.length * barWidth + 10;
-        const height = Math.ceil(width / window.innerWidth) * barSpacing + 60;
+        const availableWidth = window.innerWidth - 40;
+        const numBars = this.props.bars.length;
 
-        width = Math.min(width, window.innerWidth);
+        const barsWide = Math.min(numBars, Math.floor(availableWidth / barWidth));
+        const rowsHigh = Math.ceil(numBars / barsWide);
+
+        const width = Math.min(barsWide * barWidth, availableWidth) + 10;
+        const height = rowsHigh * barSpacing + 60;
 
         renderer.resize(width, height);
 
-        return width;
+        return barsWide;
     }
 
-    private createBar(isLast: boolean, prevBar: VF.Stave | undefined, maxX: number) {
+    private createBar(isLast: boolean, prevBar: VF.Stave | undefined, wrapLine: boolean) {
         let bar;
 
         if (prevBar === undefined) {
@@ -102,7 +111,7 @@ export class MusicDisplay extends React.PureComponent<IProps> {
             let x = barWidth + prevBar.getX();
             let y = prevBar.getBottomY() - 130;
 
-            if (x + barWidth >= maxX) {
+            if (wrapLine) {
                 x = firstBarX;
                 y += barSpacing;
             }
@@ -147,7 +156,7 @@ export class MusicDisplay extends React.PureComponent<IProps> {
             case NoteLength.Semiquaver:
             case NoteLength.TripletSemiquaver:
                 duration = '16'; break;
-                
+
             case NoteLength.DottedSemiquaver:
                 duration = '16d'; break;
 
