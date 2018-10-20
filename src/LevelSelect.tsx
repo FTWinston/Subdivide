@@ -16,6 +16,7 @@ export class LevelSelect extends React.PureComponent<IProps> {
             <h2>Select a level</h2>
             <div className="levelSelect">
                 {levels}
+                <Link to="/design" className="levelSelect__level">Design a custom level...</Link>
             </div>
         </div>
         );

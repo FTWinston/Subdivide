@@ -46,7 +46,6 @@ interface IMusicBase {
 
 export interface ILevel extends IMusicBase {
     numberOfBars: number;
-
     noteSequences: INote[][];
 }
 

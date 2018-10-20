@@ -2,9 +2,12 @@ import * as React from 'react';
 import { Route, Switch } from 'react-router';
 import './App.css';
 import { CountInType } from './CountIn';
+import { loadCustomLevel } from './customLevels';
+import { LevelDesigner } from './LevelDesigner';
 import { LevelDisplay } from './LevelDisplay';
 import { getLevels } from './levels';
 import { LevelSelect } from './LevelSelect';
+import { loadLevel } from './loadLevel';
 import { ILevel } from './musicData';
 
 interface IState {
@@ -25,10 +28,26 @@ export class App extends React.Component<{}, IState> {
     public render() {
         const renderLevel = (props: any) => {
             const levelNum = parseInt(props.match.params.id, 10);
+            const music = loadLevel(this.state.levels[levelNum - 1]);
             return <LevelDisplay
-                level={this.state.levels[levelNum - 1]}
+                music={music}
                 countIn={this.state.countIn}
                 nextLevelNum={levelNum < this.state.levels.length - 1 ? levelNum + 1 : undefined}
+            />
+        };
+
+        const renderCustom = (props: any) => {
+            const music = loadCustomLevel(props.match.params.levelData);
+            return <LevelDisplay
+                music={music}
+                countIn={this.state.countIn}
+                nextLevelNum={undefined}
+            />
+        };
+
+        const renderDesigner = (props: any) => {
+            return <LevelDesigner
+                loadData={props.levelData as string}
             />
         };
 
@@ -36,6 +55,8 @@ export class App extends React.Component<{}, IState> {
 
         return <Switch>
             <Route path="/level/:id" render={renderLevel} />
+            <Route path="/design/:levelData?" render={renderDesigner} />
+            <Route path="/custom/:levelData" render={renderCustom} />
             <Route render={renderLevelSelect} />
         </Switch>
     }

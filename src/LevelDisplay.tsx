@@ -4,15 +4,14 @@ import { CountIn, CountInType } from './CountIn';
 import { determineRhythm } from './determineRhythm';
 import { ErrorBoundary } from './ErrorBoundary';
 import './LevelDisplay.css';
-import { loadLevel } from './loadLevel';
-import { ILevel, INote, Rhythm } from './musicData';
+import { IMusic, Rhythm } from './musicData';
 import { MusicDisplay } from './MusicDisplay';
 import { delay, playRhythm, stopRhythm } from './playRhythm';
 import { RhythmDisplay } from './RhythmDisplay';
 
 interface IProps {
     countIn: CountInType;
-    level: ILevel;
+    music: IMusic;
     nextLevelNum?: number;
 }
 
@@ -23,7 +22,6 @@ const enum PlaybackStatus {
 }
 
 interface IState {
-    bars: INote[][];
     playbackStatus: PlaybackStatus;
     correctRhythm: Rhythm;
     userRhythm: Rhythm;
@@ -35,10 +33,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        const level = loadLevel(props.level);
-
         this.state = {
-            bars: level.bars,
             correctRhythm: [],
             playbackStatus: PlaybackStatus.Before,
             userRhythm: [],
@@ -46,11 +41,9 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
     }
 
     public componentWillReceiveProps(newProps: IProps) {
-        this.stopRhythm()
-        const level = loadLevel(newProps.level);
+        this.stopRhythm();
 
         this.setState({
-            bars: level.bars,
             correctRhythm: [],
             userRhythm: [],
         });
@@ -62,7 +55,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
 
     public render() {
         const bottomSection = this.state.playbackStatus === PlaybackStatus.Playing
-            ? <CountIn type={this.props.countIn} tempo={this.props.level.tempo} timeSignature={this.props.level.timeSignature} />
+            ? <CountIn type={this.props.countIn} tempo={this.props.music.tempo} timeSignature={this.props.music.timeSignature} />
             : this.renderActions()
 
         let correctRhythm;
@@ -74,12 +67,12 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
 
         return (
             <div className="screen screen--level">
-                <h2>{this.props.level.name}</h2>
+                <h2>{this.props.music.name}</h2>
                 <ErrorBoundary>
                     <MusicDisplay
-                        bars={this.state.bars}
-                        tempo={this.props.level.tempo}
-                        timeSignature={this.props.level.timeSignature}
+                        bars={this.props.music.bars}
+                        tempo={this.props.music.tempo}
+                        timeSignature={this.props.music.timeSignature}
                     />
                 </ErrorBoundary>
                 {correctRhythm}
@@ -125,7 +118,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
     }
 
     private async playRhythm() {
-        const rhythm = determineRhythm(this.state.bars, this.props.level.tempo);
+        const rhythm = determineRhythm(this.props.music.bars, this.props.music.tempo);
     
         this.setState({
             correctRhythm: rhythm,
@@ -137,7 +130,7 @@ export class LevelDisplay extends React.PureComponent<IProps, IState> {
 
         this.timeSinceUserBeat = new Date().getTime();
 
-        const countInDelay = CountIn.determineDelay(this.props.countIn, this.props.level.timeSignature, this.props.level.tempo);
+        const countInDelay = CountIn.determineDelay(this.props.countIn, this.props.music.timeSignature, this.props.music.tempo);
         await delay(countInDelay);
 
         await playRhythm(rhythm, () => this.beat());
