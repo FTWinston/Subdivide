@@ -134,31 +134,23 @@ export class MusicDisplay extends React.PureComponent<IProps> {
 
             case NoteLength.Minim:
             case NoteLength.TripletMinim:
+            case NoteLength.DottedMinim:
                 duration = '2'; break;
 
-            case NoteLength.DottedMinim:
-                duration = '2d'; break;
-                    
             case NoteLength.Crotchet:
             case NoteLength.TripletCrotchet:
+            case NoteLength.DottedCrotchet:
                 duration = '4'; break;
 
-            case NoteLength.DottedCrotchet:
-                duration = '4d'; break;
-                    
             case NoteLength.Quaver:
             case NoteLength.TripletQuaver:
+            case NoteLength.DottedQuaver:
                 duration = '8'; break;
 
-            case NoteLength.DottedQuaver:
-                duration = '8d'; break;
-            
             case NoteLength.Semiquaver:
             case NoteLength.TripletSemiquaver:
-                duration = '16'; break;
-
             case NoteLength.DottedSemiquaver:
-                duration = '16d'; break;
+                duration = '16'; break;
 
             default:
                 duration = ''; break;
@@ -172,7 +164,18 @@ export class MusicDisplay extends React.PureComponent<IProps> {
             pitch = 'g/4';
         }
 
-        return new VF.StaveNote({clef: 'treble', keys: [pitch], duration });
+        const staveNote = new VF.StaveNote({clef: 'treble', keys: [pitch], duration });
+
+        switch (note.length) {
+            case NoteLength.DottedMinim:
+            case NoteLength.DottedCrotchet:
+            case NoteLength.DottedQuaver:
+            case NoteLength.DottedSemiquaver:
+                staveNote.addDotToAll();
+                break;
+        }
+
+        return staveNote;
     }
 
     private drawTriplets(barStave: VF.Stave, context: Vex.IRenderContext, notes: VF.StaveNote[], bar: INote[]){ 
