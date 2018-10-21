@@ -58,9 +58,6 @@ export class LevelDesigner extends React.PureComponent<IProps, IState> {
             tempo: [parseInt(e.target.value, 10), this.state.tempo[1]],
         });
 
-        const addCrotchet = () => this.addNote(NoteLength.Crotchet, NoteType.Note);
-        const addCrotchetRest = () => this.addNote(NoteLength.Crotchet, NoteType.Rest);
-
         const visitLevel = () => this.visitLevel();
         return (
             <div className="screen screen--designer">
@@ -97,11 +94,15 @@ export class LevelDesigner extends React.PureComponent<IProps, IState> {
                     </select>
                     &nbsp;per minute
                 </div>
-                <div className="configuration">
+                <div className="configuration configuration--addNotes">
                     <h3>Add notes</h3>
-
-                    <button onClick={addCrotchet}>Crotchet</button>
-                    <button onClick={addCrotchetRest}>Crotchet rest</button>
+                    <div className="content">
+                        {this.renderNoteButtons('Semibreve', NoteLength.Semibreve)}
+                        {this.renderNoteButtons('Minim', NoteLength.Minim, NoteLength.DottedMinim, NoteLength.TripletMinim)}
+                        {this.renderNoteButtons('Crotchet', NoteLength.Crotchet, NoteLength.DottedCrotchet, NoteLength.TripletCrotchet)}
+                        {this.renderNoteButtons('Quaver', NoteLength.Quaver, NoteLength.DottedQuaver, NoteLength.TripletQuaver)}
+                        {this.renderNoteButtons('Semiquaver', NoteLength.Semiquaver, NoteLength.DottedSemiquaver, NoteLength.TripletSemiquaver)}
+                    </div>
                 </div>
                 
                 <ErrorBoundary>
@@ -150,5 +151,42 @@ export class LevelDesigner extends React.PureComponent<IProps, IState> {
         this.setState({
             bars
         })
+    }
+    
+    private renderNoteButtons(name: string, normalLength: NoteLength, dottedLength?: NoteLength, tripletLength?: NoteLength): any {
+        const addNormal = () => this.addNote(normalLength, NoteType.Note);
+        const addNormalRest = () => this.addNote(normalLength, NoteType.Rest);
+        
+        const addDotted = () => this.addNote(dottedLength!, NoteType.Note);
+        const addDottedRest = () => this.addNote(dottedLength!, NoteType.Rest);
+
+        const addTriplet = () => this.addNote(tripletLength!, NoteType.Note);
+        const addTripletRest = () => this.addNote(tripletLength!, NoteType.Rest);
+
+        const dottedGroup = dottedLength === undefined
+             ? undefined
+             : <div className="noteButtons__lengthGroup">
+                <div className="noteButtons__label">Dotted {name.toLowerCase()}</div>
+                 <button onClick={addDotted}>Note</button>
+                 <button onClick={addDottedRest}>Rest</button>
+             </div>
+
+        const tripletGroup = tripletLength === undefined
+             ? undefined
+             : <div className="noteButtons__lengthGroup">
+                <div className="noteButtons__label">Triplet {name.toLowerCase()}</div>
+                 <button onClick={addTriplet}>Note</button>
+                 <button onClick={addTripletRest}>Rest</button>
+             </div>
+
+        return <div className="noteButtons">
+            <div className="noteButtons__lengthGroup noteButtons__lengthGroup--main">
+                <div className="noteButtons__label">{name}</div>
+                <button onClick={addNormal}>Note</button>
+                <button onClick={addNormalRest}>Rest</button>
+            </div>
+            {dottedGroup}
+            {tripletGroup}
+        </div>
     }
 }
